@@ -1,0 +1,94 @@
+name: GameRanks
+version: 1.0.8
+description: Allows uses to rank up and down using currency gaining permissions or other attributes.
+
+author: J4D3N
+authors: []
+website: http://www.voidpowered.io/
+
+main: io.voidpowered.gameranks.GameRanks
+database: false
+softdepend: [Vault]
+
+commands:
+  ranks:
+    description: Lists all ranks and descriptions.
+    aliases: [grranks]
+    usage: /<command> [rank]
+    permission: gameranks.commands.ranks
+  rank:
+    description: Tells you your current rank.
+    aliases: [grrank, myrank]
+    usage: /<command> [player]
+    permission: gameranks.commands.rank
+  rankdown:
+    description: Ranks you down and refunds rank.
+    aliases: [grrankdown, grderank, derank]
+    usage: /rankdown [player]
+    permission: gameranks.commands.rankdown
+  rankup:
+    description: Purchases next rank up using your balance.
+    aliases: [grrankup]
+    usage: /rankup [player]
+  gameranks:
+    description: Displays help, version and allows administrators to reload configuration.
+    aliases: [gr]
+    usage: /<command> [help, version, reload]
+    permission: gameranks.commands.gameranks
+
+permissions:
+  gameranks.*:
+    description: Allows access to all GameRanks features.
+    children:
+      gameranks.commands.*: true
+  gameranks.commands.*:
+    description: Allows access to all GameRanks commands.
+    children:
+      gameranks.commands.ranks: true
+      gameranks.commands.rank.others: true
+      gameranks.commands.rankup.others: true
+      gameranks.commands.rankdown.others: true
+      gameranks.commands.gameranks.*: true
+  gameranks.commands.ranks:
+    description: Allows you to see all available ranks.
+    default: true
+  gameranks.commands.rank:
+    description: Allows you to see your rank.
+    default: true
+  gameranks.commands.rank.others:
+    description: Allows you to see other peoples ranks.
+    default: op
+    children:
+      gameranks.commands.rank: true
+  gameranks.commands.rankup:
+    description: Allows you to rank up.
+    default: true
+  gameranks.commands.rankup.others:
+    description: Allows you to rank up other players.
+    default: op
+    children:
+      gameranks.commands.rankup: true
+  gameranks.commands.rankdown:
+    description: Allows you to rank down.
+    default: true
+  gameranks.commands.rankdown.others:
+    description: Allows you to rank down other players.
+    default: op
+    children:
+      gameranks.commands.rankdown: true
+  gameranks.commands.gameranks:
+    description: Allows you to see help.
+    default: true
+  gameranks.commands.gameranks.version:
+    description: Allows you to see GameRanks version.
+    default: true
+  gameranks.commands.gameranks.reload:
+    description: Allows you to reload GameRanks configuration.
+    default: op
+  gameranks.commands.gameranks.*:
+    description: Allows access to GameRanks help, version, and reloading.
+    default: op
+    children:
+      gameranks.commands.gameranks: true
+      gameranks.commands.gameranks.version: true
+      gameranks.commands.gameranks.reload: true
