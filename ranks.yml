@@ -8,6 +8,7 @@ ranks:
     refund: 0
     prefix: 'C '
     suffix: ' [Newb]'
+    group: 'Member' # You can configure permission groups that you can use.
   B:
     permissions:
       - essentials.list
@@ -18,7 +19,6 @@ ranks:
     price: 100
     refund: 50
     prefix: 'B '
-    group: 'Member' # You can configure permission groups that you can use.
   C:
     permissions:
       - essentials.weather

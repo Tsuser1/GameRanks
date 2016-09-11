@@ -3,7 +3,6 @@ package io.voidpowered.gameranks.manager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -26,7 +25,7 @@ import net.milkbowl.vault.permission.Permission;
 public final class RankManager {
 
 	private GRConfiguration users, ranks;
-	private HashMap<String, Rank> ranksMap;
+	private List<Rank> rankList;
 	
 	private VaultManager vaultManager;
 	
@@ -45,7 +44,7 @@ public final class RankManager {
 		this.vaultManager = vaultManager;
 		this.users = users;
 		this.ranks = ranks;
-		this.ranksMap = new HashMap<String, Rank>();
+		this.rankList = new ArrayList<Rank>();
 		this.logger = Bukkit.getPluginManager().getPlugin("GameRanks").getLogger();
 		setup();
 		load();
@@ -75,7 +74,7 @@ public final class RankManager {
 	}
 	
 	public Collection<Rank> getRanks() {
-		return Collections.unmodifiableCollection(ranksMap.values());
+		return Collections.unmodifiableCollection(rankList);
 	}
 	
 	public void load() {
@@ -97,12 +96,12 @@ public final class RankManager {
 	}
 	
 	public void clear() {
-		ranksMap.clear();
+		rankList.clear();
 	}
 	
 	public void loadDefaultRank() {
 		defaultRank = getRank(ranks.getConfig().getString("default"));
-		if(ranksMap.isEmpty()) {
+		if(rankList.isEmpty()) {
 			defaultRank = null;
 		} else if(defaultRank == null) {
 			defaultRank = getRank(0);
@@ -201,7 +200,7 @@ public final class RankManager {
 			if(group != null) {
 				rank.setGroup(group);
 			}
-			ranksMap.put(rankName, rank);
+			rankList.add(rank);
 		} else {
 			errors.add("Couldn't find rank in configuration file.");
 		}
@@ -249,14 +248,16 @@ public final class RankManager {
 		if(rankName == null || rankName.isEmpty()) {
 			return null;
 		}
-		if(ranksMap.containsKey(rankName)) {
-			return ranksMap.get(rankName);
+		for(Rank rank: rankList) {
+			if(rank.getName().equals(rankName)) {
+				return rank;
+			}
 		}
 		return null;
 	}
 	
 	public Rank getRank(int rankId) {
-		for(Rank rank : ranksMap.values()) {
+		for(Rank rank : rankList) {
 			if(rank.getId() == rankId) {
 				return rank;
 			}
