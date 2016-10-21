@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -345,28 +346,36 @@ public final class RankManager {
 	public void setPrefix(Player player, Rank rank) {
 		if(supportsChat && player != null && rank != null) {
 			if(rank != null && rank.getPrefix() != null && !rank.getPrefix().isEmpty()) {
-				chat.setPlayerPrefix(player, rank.getPrefix());
+				for(World world : Bukkit.getWorlds()) {
+					chat.setPlayerPrefix(world.getName(), player, rank.getSuffix());
+				}
 			}
 		}
 	}
 	
 	public void removePrefix(Player player) {
 		if(supportsChat && player != null) {
-			chat.setPlayerPrefix(player, null);
+			for(World world : Bukkit.getWorlds()) {
+				chat.setPlayerPrefix(world.getName(), player, null);
+			}
 		}
 	}
 	
 	public void setSuffix(Player player, Rank rank) {
 		if(supportsChat && player != null && rank != null) {
 			if(rank != null && rank.getSuffix() != null && !rank.getSuffix().isEmpty()) {
-				chat.setPlayerSuffix(player, rank.getSuffix());
+				for(World world : Bukkit.getWorlds()) {
+					chat.setPlayerSuffix(world.getName(), player, rank.getSuffix());
+				}
 			}
 		}
 	}
 	
 	public void removeSuffix(Player player) {
 		if(supportsChat && player != null) {
-			chat.setPlayerSuffix(player, null);
+			for(World world : Bukkit.getWorlds()) {
+				chat.setPlayerSuffix(world.getName(), player, null);
+			}
 		}
 	}
 	
