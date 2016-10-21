@@ -8,7 +8,7 @@ website: http://www.voidpowered.io/
 
 main: io.voidpowered.gameranks.GameRanks
 database: false
-softdepend: [Vault]
+softdepend: [Vault, Essentials, BOSEconomy, iConomy, MineConomy, MultiCurrency, eWallet, ExonCP, CurrencyCore, CraftConomy, AEco, Gringotts]
 
 commands:
   ranks:
