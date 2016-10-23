@@ -229,9 +229,13 @@ public final class GRCommands implements CommandExecutor {
 											}
 										}
 									} else {
-										String lackOfFunds = lang.getLanguageString("LackOfFunds");
-										if(!lackOfFunds.isEmpty()) {
-											sender.sendMessage(lackOfFunds);
+										String funds = lang.getLanguageString("Funds");
+										if(!funds.isEmpty()) {
+											try {
+												sender.sendMessage(String.format(funds, economy.format(newRank.getPrice() - economy.getBalance(executor))));
+											} catch(IllegalFormatException e) {
+												logger.log(Level.WARNING, "Error in language file with format of Funds, please correct.", e);
+											}
 										}
 										
 									}
@@ -301,9 +305,13 @@ public final class GRCommands implements CommandExecutor {
 									}
 								}
 							} else {
-								String lackOfFunds = lang.getLanguageString("LackOfFunds");
-								if(!lackOfFunds.isEmpty()) {
-									sender.sendMessage(lackOfFunds);
+								String funds = lang.getLanguageString("Funds");
+								if(!funds.isEmpty()) {
+									try {
+										sender.sendMessage(String.format(funds, economy.format(newRank.getPrice() - economy.getBalance(player))));
+									} catch(IllegalFormatException e) {
+										logger.log(Level.WARNING, "Error in language file with format of Funds, please correct.", e);
+									}
 								}
 								//Added message to tell players just how much more money they need to rankup. [Tsuser]
 								sender.sendMessage(ChatColor.RED + "You need " + economy.format(newRank.getPrice() - economy.getBalance(player)) + " more to rankup!");
