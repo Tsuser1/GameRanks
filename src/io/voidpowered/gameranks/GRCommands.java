@@ -233,6 +233,7 @@ public final class GRCommands implements CommandExecutor {
 										if(!lackOfFunds.isEmpty()) {
 											sender.sendMessage(lackOfFunds);
 										}
+										
 									}
 								} else {
 									rankManager.applyRank(player, newRank);
@@ -304,6 +305,8 @@ public final class GRCommands implements CommandExecutor {
 								if(!lackOfFunds.isEmpty()) {
 									sender.sendMessage(lackOfFunds);
 								}
+								//Added message to tell players just how much more money they need to rankup. [Tsuser]
+								sender.sendMessage(ChatColor.RED + "You need " + economy.format(newRank.getPrice() - economy.getBalance(player)) + " more to rankup!");
 							}
 						}
 					} else {
