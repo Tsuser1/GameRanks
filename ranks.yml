@@ -3,6 +3,7 @@ ranks:
   A:
     permissions: # Add permissions to the player.
       - essentials.help
+      - -essentials.helpop # Remove /helpop for going below the default rank
     description: '&7&oThis is the lowest rank.'
     price: 0
     refund: 0
@@ -30,6 +31,6 @@ ranks:
       - '&6You can also control the weather!'
       - '&7This rank costs: &a$200'
       - '&cYou can refund this rank for: &a$100'
-    price: 100
-    refund: 50
+    price: 200
+    refund: 100
     prefix: '&3C '
