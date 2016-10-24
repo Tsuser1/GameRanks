@@ -11,6 +11,7 @@
 		<system>GitHub</system>
 	</issueManagement>
 	<build>
+		<defaultGoal>clean install</defaultGoal>
 		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
 		<resources>
 			<resource>
