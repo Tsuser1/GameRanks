@@ -1,4 +1,5 @@
-# Config version
+# -- GameRanks general configuration --
+# Config version - please don't change this, bad things could happen.
 version: 0.1
 # Language file
 lang: en_GB
