@@ -1,5 +1,5 @@
 name: GameRanks
-version: 1.1.1
+version: ${project.version}-b${BUILD_NUMBER}
 description: Allows uses to rank up and down using currency gaining permissions or other attributes.
 
 author: J4D3N
