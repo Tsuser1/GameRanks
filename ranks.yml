@@ -6,28 +6,28 @@ ranks:
     description: 'This is the lowest rank.'
     price: 0
     refund: 0
-    prefix: 'C '
-    suffix: ' [Newb]'
+    prefix: '&7A '
+    suffix: ' &8[&7Newb&8]'
     group: 'Member' # You can configure permission groups that you can use.
   B:
     permissions:
       - essentials.list
     description:
-      - 'This is the second rank, it lets you see who else is online'
-      - 'This rank costs: $100'
-      - 'You can refund this rank for: $50'
+      - '&6This is the second rank, it lets you see who else is online'
+      - '&7This rank costs: &a$100'
+      - '&cYou can refund this rank for: &a$50'
     price: 100
     refund: 50
-    prefix: 'B '
+    prefix: '&aB '
   C:
     permissions:
       - essentials.weather
       - essentials.time
     description:
-      - 'This rank provides you with the ability to kill others'
-      - 'You can also control the weather!'
-      - 'This rank costs $200'
-      - 'You can refund it for $100'
+      - '&6You can now check the time.'
+      - '&6You can also control the weather!'
+      - '&cThis rank costs: &a$200'
+      - '&cYou can refund this rank for: &a$100'
     price: 100
     refund: 50
-    prefix: 'C '
+    prefix: '&3C '
