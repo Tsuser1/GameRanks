@@ -3,15 +3,17 @@ ranks:
   A:
     permissions: # Add permissions to the player.
       - essentials.help
-    description: 'This is the lowest rank.'
+    description: '&7&oThis is the lowest rank.'
     price: 0
     refund: 0
     prefix: '&7A '
     suffix: ' &8[&7Newb&8]'
     group: 'Member' # You can configure permission groups that you can use.
   B:
+    # The default rank does not inherit the permissions of the lower ranks if it is the default rank.
     permissions:
       - essentials.list
+      - essentials.help
     description:
       - '&6This is the second rank, it lets you see who else is online'
       - '&7This rank costs: &a$100'
@@ -26,7 +28,7 @@ ranks:
     description:
       - '&6You can now check the time.'
       - '&6You can also control the weather!'
-      - '&cThis rank costs: &a$200'
+      - '&7This rank costs: &a$200'
       - '&cYou can refund this rank for: &a$100'
     price: 100
     refund: 50
