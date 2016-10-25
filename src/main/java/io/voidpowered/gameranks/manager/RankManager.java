@@ -371,16 +371,6 @@ public final class RankManager {
 			}
 		}
 	}
-
-	public void removePermissions(Player player, Rank rank) {
-		if(supportsPerms && player != null && rank != null) {
-			if(rank != null && rank.getPermissions().length > 0) {
-				for(String permission : rank.getPermissions()) {
-					permissions.playerRemove(player, permission);
-				}
-			}
-		}
-	}
 	
 	public void addGroup(Player player, Rank rank) {
 		if(supportsGroups && player != null && rank != null) {
