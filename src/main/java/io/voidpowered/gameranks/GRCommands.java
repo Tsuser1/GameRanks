@@ -373,6 +373,7 @@ public final class GRCommands implements CommandExecutor {
 			VaultManager vaultManager = plugin.vaultManager;
 			if(args.length > 0) {
 				if(sender.hasPermission("gameranks.commands.rankdown.others")) {
+					@SuppressWarnings("deprecation")
 					Player player = Bukkit.getPlayer(args[0]);
 					if(player != null) {
 						Rank rank = rankManager.getUserRank(player);
@@ -413,20 +414,20 @@ public final class GRCommands implements CommandExecutor {
 										}
 									}
 								} else {
-										rankManager.applyRank(player, newRank);
-										rankManager.setUserRank(player, newRank);
-										newRank = rankManager.getUserRank(player);
-										
-										String playerRankDown = lang.getLanguageString("PlayerRankDown");
-										if(!playerRankDown.isEmpty()) {
-											try {
-												sender.sendMessage(String.format(playerRankDown, player.getName(), newRank.getName()));
-											} catch(IllegalFormatException e) {
-												logger.log(Level.WARNING, "Error in language file with format of PlayerRankDown, please correct.", e);
-											}
+									rankManager.applyRank(player, newRank);
+									rankManager.setUserRank(player, newRank);
+									newRank = rankManager.getUserRank(player);
+									
+									String playerRankDown = lang.getLanguageString("PlayerRankDown");
+									if(!playerRankDown.isEmpty()) {
+										try {
+											sender.sendMessage(String.format(playerRankDown, player.getName(), newRank.getName()));
+										} catch(IllegalFormatException e) {
+											logger.log(Level.WARNING, "Error in language file with format of PlayerRankDown, please correct.", e);
 										}
 									}
 								}
+							}
 						} else {
 							String playerHasNoRank = lang.getLanguageString("PlayerHasNoRank");
 							if(!playerHasNoRank.isEmpty()) {
@@ -463,20 +464,20 @@ public final class GRCommands implements CommandExecutor {
 						} else {
 							if(((player.hasPermission("gameranks.rankdown." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankdown.*")) && plugin.usePermissions) || !plugin.usePermissions){
 								Economy economy = vaultManager.getEconomy();
-									if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess()) {
-										rankManager.applyRank(player, newRank);
-										rankManager.setUserRank(player, newRank);
-										newRank = rankManager.getUserRank(player);
-										
-										String userRankDown = lang.getLanguageString("UserRankDown");
-										if(!userRankDown.isEmpty()) {
-											try {
-												sender.sendMessage(String.format(userRankDown, newRank.getName()));
-											} catch(IllegalFormatException e) {
-												logger.log(Level.WARNING, "Error in language file with format of UserRankDown, please correct.", e);
-											}
+								if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess()) {
+									rankManager.applyRank(player, newRank);
+									rankManager.setUserRank(player, newRank);
+									newRank = rankManager.getUserRank(player);
+									
+									String userRankDown = lang.getLanguageString("UserRankDown");
+									if(!userRankDown.isEmpty()) {
+										try {
+											sender.sendMessage(String.format(userRankDown, newRank.getName()));
+										} catch(IllegalFormatException e) {
+											logger.log(Level.WARNING, "Error in language file with format of UserRankDown, please correct.", e);
 										}
 									}
+								}
 							} else {
 								String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 								if(!noPermissionsError.isEmpty()) {
