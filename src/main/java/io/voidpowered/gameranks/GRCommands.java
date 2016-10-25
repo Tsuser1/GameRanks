@@ -212,7 +212,6 @@ public final class GRCommands implements CommandExecutor {
 			VaultManager vaultManager = plugin.vaultManager;
 			if(args.length > 0) {
 				if(sender.hasPermission("gameranks.commands.rankup.others")) {
-					@SuppressWarnings("deprecation")
 					Player player = Bukkit.getPlayer(args[0]);
 					if(player != null) {
 						Rank rank = rankManager.getUserRank(player);
@@ -226,35 +225,38 @@ public final class GRCommands implements CommandExecutor {
 									} catch(IllegalFormatException e) {
 										logger.log(Level.WARNING, "Error in language file with format of PlayerMaximumRank, please correct.", e);
 									}
-								}
+								}								
 							} else {
 								if(sender instanceof Player) {
 									Player executor = (Player) sender;
 									Economy economy = vaultManager.getEconomy();
-									if(economy.getBalance(executor) >= newRank.getPrice()) {
-										if(economy.withdrawPlayer(executor, newRank.getPrice()).transactionSuccess()) {
-											rankManager.applyRank(player, newRank);
-											rankManager.setUserRank(player, newRank);
-											newRank = rankManager.getUserRank(player);
-											String playerRankUp = lang.getLanguageString("PlayerRankUp");
-											if(!playerRankUp.isEmpty()) {
-												try {
-													sender.sendMessage(String.format(playerRankUp, player.getName(), newRank.getName()));
-												} catch(IllegalFormatException e) {
-													logger.log(Level.WARNING, "Error in language file with format of PlayerRankUp, please correct.", e);
+									// Check if TARGET has required permissions to rankup to that
+									if(player.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankup.*")){
+										if(economy.getBalance(executor) >= newRank.getPrice()) {
+											if(economy.withdrawPlayer(executor, newRank.getPrice()).transactionSuccess()) {
+												rankManager.applyRank(player, newRank);
+												rankManager.setUserRank(player, newRank);
+												newRank = rankManager.getUserRank(player);
+												String playerRankUp = lang.getLanguageString("PlayerRankUp");
+												if(!playerRankUp.isEmpty()) {
+													try {
+														sender.sendMessage(String.format(playerRankUp, player.getName(), newRank.getName()));
+													} catch(IllegalFormatException e) {
+														logger.log(Level.WARNING, "Error in language file with format of PlayerRankUp, please correct.", e);
+													}
 												}
+											}
+										} else {
+											String lackOfFunds = lang.getLanguageString("LackOfFunds");
+											if(!lackOfFunds.isEmpty()) {
+												sender.sendMessage(lackOfFunds);
 											}
 										}
 									} else {
-										String funds = lang.getLanguageString("Funds");
-										if(!funds.isEmpty()) {
-											try {
-												sender.sendMessage(String.format(funds, economy.format(newRank.getPrice() - economy.getBalance(executor))));
-											} catch(IllegalFormatException e) {
-												logger.log(Level.WARNING, "Error in language file with format of Funds, please correct.", e);
-											}
+										String noPermissionsError = lang.getLanguageString("NoPermissionsError");
+										if(!noPermissionsError.isEmpty()) {
+											sender.sendMessage(noPermissionsError);
 										}
-										
 									}
 								} else {
 									rankManager.applyRank(player, newRank);
@@ -306,32 +308,35 @@ public final class GRCommands implements CommandExecutor {
 							}
 						} else {
 							Economy economy = vaultManager.getEconomy();
-							if(economy.getBalance(player) >= newRank.getPrice()) {
-								if(economy.withdrawPlayer(player, newRank.getPrice()).transactionSuccess()) {
-									rankManager.applyRank(player, newRank);
-									rankManager.setUserRank(player, newRank);
-									newRank = rankManager.getUserRank(player);
-									
-									String userRankUp = lang.getLanguageString("UserRankUp");
-									if(!userRankUp.isEmpty()) {
-										try {
-											sender.sendMessage(String.format(userRankUp, newRank.getName()));
-										} catch(IllegalFormatException e) {
-											logger.log(Level.WARNING, "Error in language file with format of UserRankUp, please correct.", e);
+							// Check if player has required permissions to rankup to that rank.
+							if(sender.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || sender.hasPermission("gameranks.rankup.*")){
+								if(economy.getBalance(player) >= newRank.getPrice()) {
+									if(economy.withdrawPlayer(player, newRank.getPrice()).transactionSuccess()) {
+										rankManager.applyRank(player, newRank);
+										rankManager.setUserRank(player, newRank);
+										newRank = rankManager.getUserRank(player);
+										
+										String userRankUp = lang.getLanguageString("UserRankUp");
+										if(!userRankUp.isEmpty()) {
+											try {
+												sender.sendMessage(String.format(userRankUp, newRank.getName()));
+											} catch(IllegalFormatException e) {
+												logger.log(Level.WARNING, "Error in language file with format of UserRankUp, please correct.", e);
+											}
 										}
 									}
+								} else {
+									String lackOfFunds = lang.getLanguageString("LackOfFunds");
+									if(!lackOfFunds.isEmpty()) {
+										sender.sendMessage(lackOfFunds);
+									}
+									sender.sendMessage(ChatColor.RED + "You need " + economy.format(newRank.getPrice() - economy.getBalance(player)) + " more to rankup!");
 								}
 							} else {
-								String funds = lang.getLanguageString("Funds");
-								if(!funds.isEmpty()) {
-									try {
-										sender.sendMessage(String.format(funds, economy.format(newRank.getPrice() - economy.getBalance(player))));
-									} catch(IllegalFormatException e) {
-										logger.log(Level.WARNING, "Error in language file with format of Funds, please correct.", e);
-									}
+								String noPermissionsError = lang.getLanguageString("NoPermissionsError");
+								if(!noPermissionsError.isEmpty()) {
+									sender.sendMessage(noPermissionsError);
 								}
-								//Added message to tell players just how much more money they need to rankup. [Tsuser]
-								sender.sendMessage(ChatColor.RED + "You need " + economy.format(newRank.getPrice() - economy.getBalance(player)) + " more to rankup!");
 							}
 						}
 					} else {
