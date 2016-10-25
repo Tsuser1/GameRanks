@@ -47,26 +47,60 @@ public final class GRCommands implements CommandExecutor {
 		return false;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private boolean handleSetRankCommand(CommandSender sender, Command cmd, String[] args){
 		Language lang = plugin.lang;
 		if(sender.hasPermission("gameranks.commands.setrank")){
 			RankManager rankManager = plugin.rankManager;
-			if(args.length > 0){
-				String arg = args[0];
+			if(args.length == 2){
 				Rank rank = null;
 				for(Rank rankSearch : rankManager.getRanks()) {
-					if(rankSearch.getName().equalsIgnoreCase(arg)) {
+					if(rankSearch.getName().equalsIgnoreCase(args[0])) {
 						rank = rankSearch;
 						break;
 					}
 				}
 				if(rank != null){
-					rankManager.applyRank(Bukkit.getPlayer(args[0]), rank);
+					Player player = Bukkit.getPlayer(args[1]);
+					if(player == null) {
+						String playerNotFound = lang.getLanguageString("PlayerNotFound");
+						if(!playerNotFound.isEmpty()) {
+							sender.sendMessage(playerNotFound);
+						}
+					} else {
+						rankManager.applyRank(player, rank);
+					}
 				} else {
-					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error&8: &cThat is not a valid rank!"));
+					String rankNotFound = lang.getLanguageString("RankNotFound");
+					if(!rankNotFound.isEmpty()) {
+						sender.sendMessage(rankNotFound);
+					}
+				}
+			} else if(args.length == 1) {
+				if(sender instanceof Player) {
+					Rank rank = null;
+					for(Rank rankSearch : rankManager.getRanks()) {
+						if(rankSearch.getName().equalsIgnoreCase(args[0])) {
+							rank = rankSearch;
+							break;
+						}
+					}
+					if(rank != null){
+						rankManager.applyRank((Player) sender, rank);
+					} else {
+						String rankNotFound = lang.getLanguageString("RankNotFound");
+						if(!rankNotFound.isEmpty()) {
+							sender.sendMessage(rankNotFound);
+						}
+					}
+				} else {
+					String consoleIsNotAPlayer = lang.getLanguageString("ConsoleIsNotAPlayer");
+					if(!consoleIsNotAPlayer.isEmpty()) {
+						sender.sendMessage(consoleIsNotAPlayer);
+					}
 				}
 			} else {
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error&8: &cUsage: /setrank <player> <rank>"));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error&8: &cUsage: /setrank [player] <rank>"));
 			}
 		} else {
 			String noPermissionsError = lang.getLanguageString("NoPermissionsError");
