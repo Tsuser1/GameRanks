@@ -50,50 +50,55 @@ public final class GRCommands implements CommandExecutor {
 		Language lang = plugin.lang;
 		if(sender.hasPermission("gameranks.commands.ranks")) {
 			RankManager rankManager = plugin.rankManager;
-			if(args.length > 0) {
-				String arg = args[0];
-				Rank rank = null;
-				for(Rank rankSearch : rankManager.getRanks()) {
-					if(rankSearch.getName().equalsIgnoreCase(arg)) {
-						rank = rankSearch;
-						break;
+			if(args.length > 0 && (args.length > 0) ? plugin.rankManager.rankExists(args[0]) : false) {
+					String arg = args[0];
+					Rank rank = null;
+					for(Rank rankSearch : rankManager.getRanks()) {
+						if(rankSearch.getName().equalsIgnoreCase(arg)) {
+							rank = rankSearch;
+							break;
+						}
 					}
-				}
-				if(rank != null) {
-					String[] description = rank.getDescription();
-					if(description.length > 0) {
-						for(String line : description) {
-							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', line));
+					if(rank != null) {
+						String[] description = rank.getDescription();
+						if(description.length > 0) {
+							for(String line : description) {
+								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', line));
+							}
+						} else {
+							String noRankDescription = lang.getLanguageString("NoRankDescription");
+							if(!noRankDescription.isEmpty()) {
+								sender.sendMessage(noRankDescription);
+							}
 						}
 					} else {
-						String noRankDescription = lang.getLanguageString("NoRankDescription");
-						if(!noRankDescription.isEmpty()) {
-							sender.sendMessage(noRankDescription);
+						String rankNotFound = lang.getLanguageString("RankNotFound");
+						if(!rankNotFound.isEmpty()) {
+							sender.sendMessage(rankNotFound);
 						}
 					}
-				} else {
-					String rankNotFound = lang.getLanguageString("RankNotFound");
-					if(!rankNotFound.isEmpty()) {
-						sender.sendMessage(rankNotFound);
-					}
-				}
 			} else {
 				Collection<Rank> ranks = rankManager.getRanks();
 				if(!ranks.isEmpty()) {
-					String ranksListTitle = lang.getLanguageString("RanksListTitle");
-					if(!ranksListTitle.isEmpty()) {
-						sender.sendMessage(ranksListTitle);
-					}
 					String ranksListLine = lang.getLanguageString("RanksListLine");
 					if(!ranksListLine.isEmpty()) {
-						int lineNum = 1;
-						for(Rank rank : ranks) {
+						int index = 1;
+						if(args.length > 0){
+							index = Integer.parseInt(args[0]);
+							if(index < 1){ index = 1; }
+						}
+						int originIndex = (ranks.size() < 9) ? 0 : (index != 1) ? ((index - 1) * 8 + 1) : ((index - 1) * 8);
+						String ranksListTitle = lang.getLanguageString("RanksListTitle");
+						if(!ranksListTitle.isEmpty()) {
+							sender.sendMessage(ranksListTitle + ChatColor.DARK_GRAY + " [" + ChatColor.GREEN + index + ChatColor.GRAY + "/" + ChatColor.GREEN + Integer.valueOf(ranks.size() / 8 + (ranks.size() % 8 > 0 ? 1 : 0)) + ChatColor.DARK_GRAY + "]");
+						}
+						for(int i = originIndex; i < ranks.size() && i <= originIndex+8; i++){
+							Rank rank = (Rank) ranks.toArray()[i];
 							try {
-								sender.sendMessage(String.format(ranksListLine, lineNum, rank.getName()));
+								sender.sendMessage(String.format(ranksListLine, i+1, rank.getName()));
 							} catch(IllegalFormatException e) {
 								logger.log(Level.WARNING, "Error in language file with format of RanksListLine, please correct.", e);
 							}
-							lineNum++;
 						}
 					}
 				} else {
