@@ -412,7 +412,7 @@ public final class GRCommands implements CommandExecutor {
 											sender.sendMessage(noPermissionsError);
 										}
 									}
-									} else {
+								} else {
 										rankManager.applyRank(player, newRank);
 										rankManager.setUserRank(player, newRank);
 										newRank = rankManager.getUserRank(player);
