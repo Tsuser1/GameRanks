@@ -326,6 +326,26 @@ public final class RankManager {
 		}
 	}
 	
+	public void addPermissions(Player player, Rank rank) {
+		if(supportsPerms && player != null && rank != null) {
+			if(rank != null && rank.getPermissions().length > 0) {
+				for(String permission : rank.getPermissions()) {
+					permissions.playerAdd(player, permission);
+				}
+			}
+		}
+	}
+
+	public void removePermissions(Player player, Rank rank) {
+		if(supportsPerms && player != null && rank != null) {
+			if(rank != null && rank.getPermissions().length > 0) {
+				for(String permission : rank.getPermissions()) {
+					permissions.playerRemove(player, permission);
+				}
+			}
+		}
+	}
+	
 	public void addGroup(Player player) {
 		if(supportsGroups && player != null) {
 			addGroup(player, getUserRank(player));
