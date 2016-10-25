@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -415,9 +414,6 @@ public final class RankManager {
 	}
 
 	public void applyRank(Player player, Rank rank) {
-		if(player == null) {
-			return;
-		}
 		removePermissions(player);
 		removeGroup(player);
 		addPermissions(player, rank);
