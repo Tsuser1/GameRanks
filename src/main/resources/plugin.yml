@@ -1,5 +1,5 @@
 name: GameRanks
-version: ${project.version}-b${BUILD_NUMBER}
+version: ${project.version}
 description: Allows uses to rank up and down using currency gaining permissions or other attributes.
 
 author: J4D3N
@@ -46,6 +46,8 @@ permissions:
     description: Allows access to all GameRanks features.
     children:
       gameranks.commands.*: true
+      gameranks.rankup.*: true
+      gameranks.rankdown.*: true
   gameranks.commands.*:
     description: Allows access to all GameRanks commands.
     children:

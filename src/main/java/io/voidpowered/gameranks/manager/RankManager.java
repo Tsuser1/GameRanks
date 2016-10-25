@@ -326,6 +326,26 @@ public final class RankManager {
 		}
 	}
 	
+	public void addPermissions(Player player, Rank rank) {
+		if(supportsPerms && player != null && rank != null) {
+			if(rank != null && rank.getPermissions().length > 0) {
+				for(String permission : rank.getPermissions()) {
+					permissions.playerAdd(player, permission);
+				}
+			}
+		}
+	}
+
+	public void removePermissions(Player player, Rank rank) {
+		if(supportsPerms && player != null && rank != null) {
+			if(rank != null && rank.getPermissions().length > 0) {
+				for(String permission : rank.getPermissions()) {
+					permissions.playerRemove(player, permission);
+				}
+			}
+		}
+	}
+	
 	public void addGroup(Player player) {
 		if(supportsGroups && player != null) {
 			addGroup(player, getUserRank(player));
@@ -344,65 +364,37 @@ public final class RankManager {
 		}
 	}
 	
-	public void setSuffix(Player player) {
-		if(supportsChat && player != null) {
-			setSuffix(player, getUserRank(player));
-		}
-	}
-	
 	public void setPrefix(Player player, Rank rank) {
 		if(supportsChat && player != null && rank != null) {
 			if(rank != null && rank.getPrefix() != null && !rank.getPrefix().isEmpty()) {
-				for(World world : Bukkit.getWorlds()) {
-					chat.setPlayerPrefix(world.getName(), player, rank.getSuffix());
-				}
+				chat.setPlayerPrefix(null, player, rank.getPrefix());
 			}
 		}
 	}
 	
 	public void removePrefix(Player player) {
 		if(supportsChat && player != null) {
-			for(World world : Bukkit.getWorlds()) {
-				chat.setPlayerPrefix(world.getName(), player, null);
-			}
+			chat.setPlayerPrefix(null, player, null);
+		}
+	}
+	
+	public void setSuffix(Player player) {
+		if(supportsChat && player != null) {
+			setSuffix(player, getUserRank(player));
 		}
 	}
 	
 	public void setSuffix(Player player, Rank rank) {
 		if(supportsChat && player != null && rank != null) {
 			if(rank != null && rank.getSuffix() != null && !rank.getSuffix().isEmpty()) {
-				for(World world : Bukkit.getWorlds()) {
-					chat.setPlayerSuffix(world.getName(), player, rank.getSuffix());
-				}
+				chat.setPlayerSuffix(null, player, rank.getSuffix());
 			}
 		}
 	}
 	
 	public void removeSuffix(Player player) {
 		if(supportsChat && player != null) {
-			for(World world : Bukkit.getWorlds()) {
-				chat.setPlayerSuffix(world.getName(), player, null);
-			}
-		}
-	}
-	
-	public void addPermissions(Player player, Rank rank) {
-		if(supportsPerms && player != null && rank != null) {
-			if(rank != null && rank.getPermissions().length > 0) {
-				for(String permission : rank.getPermissions()) {
-					permissions.playerAdd(player, permission);
-				}
-			}
-		}
-	}
-
-	public void removePermissions(Player player, Rank rank) {
-		if(supportsPerms && player != null && rank != null) {
-			if(rank != null && rank.getPermissions().length > 0) {
-				for(String permission : rank.getPermissions()) {
-					permissions.playerRemove(player, permission);
-				}
-			}
+			chat.setPlayerSuffix(null, player, null);
 		}
 	}
 	
