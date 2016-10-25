@@ -352,31 +352,11 @@ public final class RankManager {
 		}
 	}
 	
-	public void setPrefix(Player player, Rank rank) {
-		if(supportsChat && player != null && rank != null) {
-			if(rank != null && rank.getPrefix() != null && !rank.getPrefix().isEmpty()) {
-				for(World world : Bukkit.getWorlds()) {
-					chat.setPlayerPrefix(world.getName(), player, rank.getSuffix());
-				}
-			}
-		}
-	}
-	
 	public void removePrefix(Player player) {
 		if(supportsChat && player != null) {
 			chat.setPlayerPrefix(null, player, null);
 		}
 	}}
-	
-	public void setSuffix(Player player, Rank rank) {
-		if(supportsChat && player != null && rank != null) {
-			if(rank != null && rank.getSuffix() != null && !rank.getSuffix().isEmpty()) {
-				for(World world : Bukkit.getWorlds()) {
-					chat.setPlayerSuffix(world.getName(), player, rank.getSuffix());
-				}
-			}
-		}
-	}
 	
 	public void removeSuffix(Player player) {
 		if(supportsChat && player != null) {
