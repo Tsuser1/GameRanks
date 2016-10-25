@@ -356,7 +356,7 @@ public final class RankManager {
 		if(supportsChat && player != null) {
 			chat.setPlayerPrefix(null, player, null);
 		}
-	}}
+	}
 	
 	public void removeSuffix(Player player) {
 		if(supportsChat && player != null) {
