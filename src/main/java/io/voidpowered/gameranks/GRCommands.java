@@ -41,8 +41,40 @@ public final class GRCommands implements CommandExecutor {
 				return handleRankDownCommand(sender, cmd, args);
 			case "gameranks":
 				return handleGameRanksCommand(sender, cmd, args);
+			case "setrank":
+				return handleSetRankCommand(sender, cmd, args);
 		}
 		return false;
+	}
+	
+	private boolean handleSetRankCommand(CommandSender sender, Command cmd, String[] args){
+		Language lang = plugin.lang;
+		if(sender.hasPermission("gameranks.commands.setrank")){
+			RankManager rankManager = plugin.rankManager;
+			if(args.length > 0){
+				String arg = args[0];
+				Rank rank = null;
+				for(Rank rankSearch : rankManager.getRanks()) {
+					if(rankSearch.getName().equalsIgnoreCase(arg)) {
+						rank = rankSearch;
+						break;
+					}
+				}
+				if(rank != null){
+					rankManager.applyRank(Bukkit.getPlayer(args[0]), rank);
+				} else {
+					sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error&8: &cThat is not a valid rank!"));
+				}
+			} else {
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error&8: &cUsage: /setrank <player> <rank>"));
+			}
+		} else {
+			String noPermissionsError = lang.getLanguageString("NoPermissionsError");
+			if(!noPermissionsError.isEmpty()) {
+				sender.sendMessage(noPermissionsError);
+			}
+		}
+		return true;
 	}
 
 	private boolean handleRanksCommand(CommandSender sender, Command cmd, String[] args) {
