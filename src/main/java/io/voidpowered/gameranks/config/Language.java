@@ -19,6 +19,11 @@ public final class Language extends GRConfiguration {
 		this.plugin = plugin;
 	}
 	
+	/**
+	 * Get an entry from within the language file.
+	 * @param str Desired key
+	 * @return Configured string or null
+	 */
 	private String getString(String str) {
 		FileConfiguration config = getConfig();
 		if(config.isSet(str)) {
@@ -32,6 +37,11 @@ public final class Language extends GRConfiguration {
 		}
 	}
 	
+	/**
+	 * Retrieves a language file entry from configuration.
+	 * @param str Desired key
+	 * @return Formatted string or null
+	 */
 	public String getLanguageString(String str) {
 		String string = null;
 		if((string = getString(str)) == null) {
@@ -43,6 +53,11 @@ public final class Language extends GRConfiguration {
 		return ChatColor.translateAlternateColorCodes('&', string);
 	}
 	
+	/**
+	 * Get default string for a language configuration value.
+	 * @param str Desired key
+	 * @return Default string or null
+	 */
 	private String getDefaultString(String str) {
 		try {
 			Reader defConfigStream = new InputStreamReader(plugin.getResource("en_GB.yml"), "UTF8");
