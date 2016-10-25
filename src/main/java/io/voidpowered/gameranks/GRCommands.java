@@ -93,7 +93,7 @@ public final class GRCommands implements CommandExecutor {
 						index = (ranks.size() < 9) ? 0 : (index != 1) ? ((index - 1) * 8 + 1) : ((index - 1) * 8);
 						String ranksListTitle = lang.getLanguageString("RanksListTitle");
 						if(!ranksListTitle.isEmpty()) {
-							sender.sendMessage(ranksListTitle + ChatColor.DARK_GRAY + " [" + ChatColor.GREEN + index + ChatColor.GRAY + "/" + ChatColor.GREEN + Integer.valueOf(ranks.size() / 8 + (ranks.size() % 8 > 0 ? 1 : 0)) + ChatColor.DARK_GRAY + "]");
+							sender.sendMessage(ranksListTitle + ChatColor.DARK_GRAY + " [" + ChatColor.GREEN + args[0] + ChatColor.GRAY + "/" + ChatColor.GREEN + Integer.valueOf(ranks.size() / 8 + (ranks.size() % 8 > 0 ? 1 : 0)) + ChatColor.DARK_GRAY + "]");
 						}
 						for(int i = index; i < ranks.size() && i <= index+8; i++){
 							Rank rank = (Rank) ranks.toArray()[i];
