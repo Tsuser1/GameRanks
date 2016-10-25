@@ -46,6 +46,8 @@ permissions:
     description: Allows access to all GameRanks features.
     children:
       gameranks.commands.*: true
+      gameranks.rankup.*: true
+      gameranks.rankdown.*: true
   gameranks.commands.*:
     description: Allows access to all GameRanks commands.
     children:
