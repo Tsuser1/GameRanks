@@ -89,12 +89,18 @@ public final class GameRanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Save default configuration values to disk. This is an initial setup function.
+	 */
 	private void saveDefaultConfigs() {
 		(config = new GRConfiguration(this, "config.yml")).saveDefaultConfig();
 		(users = new GRConfiguration(this, "users.yml")).saveDefaultConfig();
 		(ranks = new GRConfiguration(this, "ranks.yml")).saveDefaultConfig();
 	}
 	
+	/**
+	 * Load language configuration.
+	 */
 	private void loadLanguage() {
 		FileConfiguration config = this.config.getConfig();
 		String langName;
@@ -121,6 +127,10 @@ public final class GameRanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Setup ranks for a player (usually the first time they join).
+	 * @param player The player to setup values for
+	 */
 	private void addPlayer(Player player) {
 		if(rankManager != null) {
 			boolean playerHasRank = false;
@@ -144,6 +154,10 @@ public final class GameRanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Delete a player from the database.
+	 * @param player The player to be removed
+	 */
 	private void removePlayer(Player player) {
 		if(rankManager != null) {
 			if(rankManager.getUserRank(player) != null) {
