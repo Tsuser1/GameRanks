@@ -249,8 +249,15 @@ public final class RankManager {
 		if(rankName == null || rankName.isEmpty()) {
 			return null;
 		}
+		// case sensitive search
 		for(Rank rank: rankList) {
 			if(rank.getName().equals(rankName)) {
+				return rank;
+			}
+		}
+		// executes non-case sensitive search after so it doesn't order incorrectly
+		for(Rank rank: rankList) {
+			if(rank.getName().equalsIgnoreCase(rankName)) {
 				return rank;
 			}
 		}
@@ -430,7 +437,7 @@ public final class RankManager {
 	 * @return if rank exists
 	 */
 	public boolean rankExists(String rank){
-		for(Rank rankSearch : this.getRanks()) {
+		for(Rank rankSearch : getRanks()) {
 			if(rankSearch.getName().equalsIgnoreCase(rank)) {
 				return true;
 			}
