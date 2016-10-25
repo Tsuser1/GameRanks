@@ -344,9 +344,11 @@ public final class RankManager {
 		}
 	}
 	
-	public void setSuffix(Player player) {
-		if(supportsChat && player != null) {
-			setSuffix(player, getUserRank(player));
+	public void setPrefix(Player player, Rank rank) {
+		if(supportsChat && player != null && rank != null) {
+			if(rank != null && rank.getPrefix() != null && !rank.getPrefix().isEmpty()) {
+				chat.setPlayerPrefix(null, player, rank.getPrefix());
+			}
 		}
 	}
 	
