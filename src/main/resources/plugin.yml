@@ -12,9 +12,9 @@ softdepend: [Vault, SaneEconomy, Essentials, BOSEconomy, iConomy, MineConomy, Mu
 
 commands:
   ranks:
-    description: Lists all ranks and descriptions.
+    description: Lists all ranks and descriptions in pages and selectively.
     aliases: [grranks]
-    usage: /<command> [rank]
+    usage: /<command> [rank, page number]
     permission: gameranks.commands.ranks
   rank:
     description: Tells you your current rank.

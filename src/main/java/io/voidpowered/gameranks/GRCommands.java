@@ -1,6 +1,5 @@
 package io.voidpowered.gameranks;
 
-import java.util.Collection;
 import java.util.IllegalFormatException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,35 +77,39 @@ public final class GRCommands implements CommandExecutor {
 					}
 				}
 			} else {
-				Collection<Rank> ranks = rankManager.getRanks();
-				if(!ranks.isEmpty()) {
+				Rank[] ranks = rankManager.getRanks().toArray(new Rank[0]);
+				if(ranks.length > 0) {
 					String ranksListLine = lang.getLanguageString("RanksListLine");
 					if(!ranksListLine.isEmpty()) {
-						int index = 1;
-						if(args.length > 0){
+						Integer index = 1;
+						if(args.length > 0) {
 							// Attempt to get page user is referencing.
 							try {
 								index = Integer.parseInt(args[0]); 
 							} catch(NumberFormatException ex) {
-								index = 1; 
+								// This should ideally have an error message of it's own.
+								index = null; 
 							}
 							// Any attempt to reference a negative number is nullified.
-							if(index < 1){
-								index = 1; 
+							if(index != null && index < 1){
+								index = 1;
 							}
 						}
-						String ranksListTitle = lang.getLanguageString("RanksListTitle");
-						if(!ranksListTitle.isEmpty()) {
-							sender.sendMessage(ranksListTitle + ChatColor.DARK_GRAY + " [" + ChatColor.GREEN + index + ChatColor.GRAY + "/" + ChatColor.GREEN + Integer.valueOf(ranks.size() / 8 + (ranks.size() % 8 > 0 ? 1 : 0)) + ChatColor.DARK_GRAY + "]");
-						}
-						// Calculate start position
-						index = (ranks.size() < 9) ? 0 : (index != 1) ? ((index - 1) * 8 + 1) : ((index - 1) * 8);
-						Rank[] rankArray = rankManager.getRanks().toArray(new Rank[0]);
-						for(int i = index; i < ranks.size() && i <= index+8; i++){
-							try {
-								sender.sendMessage(String.format(ranksListLine, i+1, rankArray[i].getName()));
-							} catch(IllegalFormatException e) {
-								logger.log(Level.WARNING, "Error in language file with format of RanksListLine, please correct.", e);
+						if(index == null) {
+							sender.sendMessage(ChatColor.RED + "Error: Invalid page number!");
+						} else {
+							String ranksListTitle = lang.getLanguageString("RanksListTitle");
+							if(!ranksListTitle.isEmpty()) {
+								sender.sendMessage(ranksListTitle + ChatColor.DARK_GRAY + " [" + ChatColor.GREEN + index + ChatColor.GRAY + "/" + ChatColor.GREEN + Integer.valueOf(ranks.length / 8 + (ranks.length % 8 > 0 ? 1 : 0)) + ChatColor.DARK_GRAY + "]");
+							}
+							// Calculate start position
+							index = (ranks.length < 9) ? 0 : (index != 1) ? ((index - 1) * 8 + 1) : ((index - 1) * 8);
+							for(int i = index; i < ranks.length && i <= index + 8; i++) {
+								try {
+									sender.sendMessage(String.format(ranksListLine, i + 1, ranks[i].getName()));
+								} catch(IllegalFormatException e) {
+									logger.log(Level.WARNING, "Error in language file with format of RanksListLine, please correct.", e);
+								}
 							}
 						}
 					}
