@@ -378,9 +378,9 @@ public final class RankManager {
 		}
 	}
 	
-	public void removeSuffix(Player player) {
+	public void setSuffix(Player player) {
 		if(supportsChat && player != null) {
-			chat.setPlayerSuffix(null, player, null);
+			setSuffix(player, getUserRank(player));
 		}
 	}
 	
@@ -389,6 +389,12 @@ public final class RankManager {
 			if(rank != null && rank.getSuffix() != null && !rank.getSuffix().isEmpty()) {
 				chat.setPlayerSuffix(null, player, rank.getSuffix());
 			}
+		}
+	}
+	
+	public void removeSuffix(Player player) {
+		if(supportsChat && player != null) {
+			chat.setPlayerSuffix(null, player, null);
 		}
 	}
 	
