@@ -70,8 +70,9 @@ public final class GameRanks extends JavaPlugin {
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				addPlayer(player);
 			}
-			// setup language
+			// setup essential configuration
 			loadLanguage();
+			loadPermissions();
 			// setup commands
 			commands = new GRCommands(this);
 			getCommand("ranks").setExecutor(commands);

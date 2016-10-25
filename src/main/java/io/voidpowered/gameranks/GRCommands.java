@@ -212,6 +212,7 @@ public final class GRCommands implements CommandExecutor {
 			VaultManager vaultManager = plugin.vaultManager;
 			if(args.length > 0) {
 				if(sender.hasPermission("gameranks.commands.rankup.others")) {
+					@SuppressWarnings("deprecation")
 					Player player = Bukkit.getPlayer(args[0]);
 					if(player != null) {
 						Rank rank = rankManager.getUserRank(player);
@@ -231,7 +232,7 @@ public final class GRCommands implements CommandExecutor {
 									Player executor = (Player) sender;
 									Economy economy = vaultManager.getEconomy();
 									// Check if TARGET has required permissions to rankup to that
-									if(player.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankup.*")){
+									if(((player.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankup.*")) && plugin.usePermissions) || !plugin.usePermissions){
 										if(economy.getBalance(executor) >= newRank.getPrice()) {
 											if(economy.withdrawPlayer(executor, newRank.getPrice()).transactionSuccess()) {
 												rankManager.applyRank(player, newRank);
@@ -309,7 +310,7 @@ public final class GRCommands implements CommandExecutor {
 						} else {
 							Economy economy = vaultManager.getEconomy();
 							// Check if player has required permissions to rankup to that rank.
-							if(sender.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || sender.hasPermission("gameranks.rankup.*")){
+							if(((sender.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || sender.hasPermission("gameranks.rankup.*")) && plugin.usePermissions) || !plugin.usePermissions){
 								if(economy.getBalance(player) >= newRank.getPrice()) {
 									if(economy.withdrawPlayer(player, newRank.getPrice()).transactionSuccess()) {
 										rankManager.applyRank(player, newRank);
