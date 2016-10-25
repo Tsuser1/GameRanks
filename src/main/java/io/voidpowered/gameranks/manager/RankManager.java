@@ -424,4 +424,17 @@ public final class RankManager {
 		setSuffix(player, rank);
 	}
 	
+	/**
+	 * Check if a rank is defined in the ranks configuration.
+	 * @param rank to be checked for existence
+	 * @return if rank exists
+	 */
+	public boolean rankExists(String rank){
+		for(Rank rankSearch : this.getRanks()) {
+			if(rankSearch.getName().equalsIgnoreCase(rank)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
