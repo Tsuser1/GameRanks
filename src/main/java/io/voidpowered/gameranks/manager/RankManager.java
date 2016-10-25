@@ -17,8 +17,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import io.voidpowered.gameranks.api.Rank;
-import io.voidpowered.gameranks.api.event.PlayerRankEvent;
 import io.voidpowered.gameranks.config.GRConfiguration;
+import io.voidpowered.gameranks.event.PlayerRankEvent;
 import io.voidpowered.gameranks.util.GameRanksException;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;

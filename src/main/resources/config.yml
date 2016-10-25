@@ -3,3 +3,5 @@
 version: 0.1
 # Language file
 lang: en_GB
+# Use per-rank permissions
+rankPermissions: false

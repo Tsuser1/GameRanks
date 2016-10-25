@@ -26,6 +26,7 @@ public final class GameRanks extends JavaPlugin {
 	protected VaultManager vaultManager;
 	protected RankManager rankManager;
 	protected Language lang;
+	protected boolean usePermissions;
 	
 	private GRConfiguration config, users, ranks;
 	private GRCommands commands;
@@ -96,6 +97,23 @@ public final class GameRanks extends JavaPlugin {
 		(config = new GRConfiguration(this, "config.yml")).saveDefaultConfig();
 		(users = new GRConfiguration(this, "users.yml")).saveDefaultConfig();
 		(ranks = new GRConfiguration(this, "ranks.yml")).saveDefaultConfig();
+	}
+	
+	private void loadPermissions() {
+		FileConfiguration config = this.config.getConfig();
+		boolean perms;
+		if(config.isSet("rankPermissions")) {
+			if(config.isBoolean("rankPermissions")) {
+				perms = config.getBoolean("usePermissions");
+			} else {
+				config.set("usePermissions", perms = false);
+				this.config.saveConfig();
+			}
+		}  else {
+			config.set("usePermissions", perms = false);
+			this.config.saveConfig();
+		}
+		usePermissions = perms;
 	}
 	
 	/**
