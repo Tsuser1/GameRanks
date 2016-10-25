@@ -51,32 +51,32 @@ public final class GRCommands implements CommandExecutor {
 		if(sender.hasPermission("gameranks.commands.ranks")) {
 			RankManager rankManager = plugin.rankManager;
 			if(args.length > 0 && (args.length > 0) ? plugin.rankManager.rankExists(args[0]) : false) {
-					String arg = args[0];
-					Rank rank = null;
-					for(Rank rankSearch : rankManager.getRanks()) {
-						if(rankSearch.getName().equalsIgnoreCase(arg)) {
-							rank = rankSearch;
-							break;
-						}
+				String arg = args[0];
+				Rank rank = null;
+				for(Rank rankSearch : rankManager.getRanks()) {
+					if(rankSearch.getName().equalsIgnoreCase(arg)) {
+						rank = rankSearch;
+						break;
 					}
-					if(rank != null) {
-						String[] description = rank.getDescription();
-						if(description.length > 0) {
-							for(String line : description) {
-								sender.sendMessage(ChatColor.translateAlternateColorCodes('&', line));
-							}
-						} else {
-							String noRankDescription = lang.getLanguageString("NoRankDescription");
-							if(!noRankDescription.isEmpty()) {
-								sender.sendMessage(noRankDescription);
-							}
+				}
+				if(rank != null) {
+					String[] description = rank.getDescription();
+					if(description.length > 0) {
+						for(String line : description) {
+							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', line));
 						}
 					} else {
-						String rankNotFound = lang.getLanguageString("RankNotFound");
-						if(!rankNotFound.isEmpty()) {
-							sender.sendMessage(rankNotFound);
+						String noRankDescription = lang.getLanguageString("NoRankDescription");
+						if(!noRankDescription.isEmpty()) {
+							sender.sendMessage(noRankDescription);
 						}
 					}
+				} else {
+					String rankNotFound = lang.getLanguageString("RankNotFound");
+					if(!rankNotFound.isEmpty()) {
+						sender.sendMessage(rankNotFound);
+					}
+				}
 			} else {
 				Collection<Rank> ranks = rankManager.getRanks();
 				if(!ranks.isEmpty()) {
