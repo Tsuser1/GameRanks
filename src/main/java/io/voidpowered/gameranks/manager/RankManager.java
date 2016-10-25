@@ -423,6 +423,9 @@ public final class RankManager {
 	}
 
 	public void applyRank(Player player, Rank rank) {
+		if(player == null) {
+			return;
+		}
 		removePermissions(player);
 		removeGroup(player);
 		addPermissions(player, rank);
