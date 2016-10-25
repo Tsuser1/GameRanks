@@ -84,15 +84,18 @@ public final class GRCommands implements CommandExecutor {
 					if(!ranksListLine.isEmpty()) {
 						int index = 1;
 						if(args.length > 0){
-							index = Integer.parseInt(args[0]);
+							// Attempt to get page user is referencing.
+							try { index = Integer.parseInt(args[0]); } catch(NumberFormatException ex) { index = 1; };
+							// Any attempt to reference a negative number is nullified.
 							if(index < 1){ index = 1; }
 						}
-						int originIndex = (ranks.size() < 9) ? 0 : (index != 1) ? ((index - 1) * 8 + 1) : ((index - 1) * 8);
+						// Calculate start position
+						index = (ranks.size() < 9) ? 0 : (index != 1) ? ((index - 1) * 8 + 1) : ((index - 1) * 8);
 						String ranksListTitle = lang.getLanguageString("RanksListTitle");
 						if(!ranksListTitle.isEmpty()) {
 							sender.sendMessage(ranksListTitle + ChatColor.DARK_GRAY + " [" + ChatColor.GREEN + index + ChatColor.GRAY + "/" + ChatColor.GREEN + Integer.valueOf(ranks.size() / 8 + (ranks.size() % 8 > 0 ? 1 : 0)) + ChatColor.DARK_GRAY + "]");
 						}
-						for(int i = originIndex; i < ranks.size() && i <= originIndex+8; i++){
+						for(int i = index; i < ranks.size() && i <= index+8; i++){
 							Rank rank = (Rank) ranks.toArray()[i];
 							try {
 								sender.sendMessage(String.format(ranksListLine, i+1, rank.getName()));
