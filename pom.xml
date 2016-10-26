@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.voidpowered.gameranks</groupId>
 	<artifactId>GameRanks</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.1.2-PREALPHA</version>
 	<packaging>jar</packaging>
 	<name>GameRanks</name>
 	<url>https://github.com/J4D3N/GameRanks</url>

@@ -306,7 +306,10 @@ public final class GRCommands implements CommandExecutor {
 									// Check if TARGET has required permissions to rankup to that
 									if(((player.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankup.*")) && plugin.usePermissions) || !plugin.usePermissions){
 										if(economy.getBalance(executor) >= newRank.getPrice()) {
-											if(economy.withdrawPlayer(executor, newRank.getPrice()).transactionSuccess() && cooldown.isCooling(player.getUniqueId(), "rankup", 30)) {
+											if(economy.withdrawPlayer(executor, newRank.getPrice()).transactionSuccess() && !cooldown.isCooling(player.getUniqueId(), "rankup", 30)) {
+												plugin.getLogger().info("DEBUG> isCooling 30:" + cooldown.isCooling(player.getUniqueId(), "rankup", 30));
+												plugin.getLogger().info("DEBUG> isCooling 300:" + cooldown.isCooling(player.getUniqueId(), "rankup", 300));
+												plugin.getLogger().info("DEBUG> isCooling 3000:" + cooldown.isCooling(player.getUniqueId(), "rankup", 3000));
 												rankManager.applyRank(player, newRank);
 												rankManager.setUserRank(player, newRank);
 												cooldown.setCooldown(executor.getUniqueId(), "rankup");
@@ -395,7 +398,7 @@ public final class GRCommands implements CommandExecutor {
 							if(((sender.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || sender.hasPermission("gameranks.rankup.*")) && plugin.usePermissions) || !plugin.usePermissions){
 								if(economy.getBalance(player) >= newRank.getPrice()) {
 									//TODO: Add configuration option for cooldown times
-									if(economy.withdrawPlayer(player, newRank.getPrice()).transactionSuccess() && cooldown.isCooling(player.getUniqueId(), "rankup", 30)) {
+									if(economy.withdrawPlayer(player, newRank.getPrice()).transactionSuccess() && !cooldown.isCooling(player.getUniqueId(), "rankup", 30)) {
 										rankManager.applyRank(player, newRank);
 										rankManager.setUserRank(player, newRank);
 										newRank = rankManager.getUserRank(player);
@@ -485,7 +488,7 @@ public final class GRCommands implements CommandExecutor {
 									// Check if TARGET has needed permissions to rankdown
 									if(((player.hasPermission("gameranks.rankdown." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankdown.*")) && plugin.usePermissions) || !plugin.usePermissions){
 										Economy economy = vaultManager.getEconomy();
-										if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess() && cooldown.isCooling(player.getUniqueId(), "rankdown", 30)) {
+										if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess() && !cooldown.isCooling(player.getUniqueId(), "rankdown", 30)) {
 											rankManager.applyRank(player, newRank);
 											rankManager.setUserRank(player, newRank);
 											newRank = rankManager.getUserRank(player);
@@ -565,7 +568,7 @@ public final class GRCommands implements CommandExecutor {
 						} else {
 							if(((player.hasPermission("gameranks.rankdown." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankdown.*")) && plugin.usePermissions) || !plugin.usePermissions){
 								Economy economy = vaultManager.getEconomy();
-								if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess() && cooldown.isCooling(player.getUniqueId(), "rankdown", 30)) {
+								if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess() && !cooldown.isCooling(player.getUniqueId(), "rankdown", 30)) {
 									rankManager.applyRank(player, newRank);
 									rankManager.setUserRank(player, newRank);
 									newRank = rankManager.getUserRank(player);

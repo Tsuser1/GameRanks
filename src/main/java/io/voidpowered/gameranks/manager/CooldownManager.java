@@ -49,6 +49,6 @@ public class CooldownManager {
 		if(uuid == null || type == null){
 			return true; // Just say the player is cooling down if the request is invalid.
 		}
-		return (System.currentTimeMillis() - users.getConfig().getInt("users." + uuid.toString() + ".cooldown." + type) > cooldown*1000) ? true : false;
+		return (System.currentTimeMillis() - users.getConfig().getInt("users." + uuid.toString() + ".cooldown." + type) > cooldown*1000) ? false : true;
 	}
 }
