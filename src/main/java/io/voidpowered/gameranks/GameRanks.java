@@ -74,7 +74,7 @@ public final class GameRanks extends JavaPlugin {
 			loadLanguage();
 			loadPermissions();
 			// setup commands
-			commands = new GRCommands(this);
+			commands = new GRCommands(this, users);
 			getCommand("ranks").setExecutor(commands);
 			getCommand("rank").setExecutor(commands);
 			getCommand("rankup").setExecutor(commands);

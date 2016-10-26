@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 import io.voidpowered.gameranks.api.Rank;
+import io.voidpowered.gameranks.config.GRConfiguration;
 import io.voidpowered.gameranks.config.Language;
 import io.voidpowered.gameranks.manager.CooldownManager;
 import io.voidpowered.gameranks.manager.RankManager;
@@ -25,9 +26,10 @@ public final class GRCommands implements CommandExecutor {
 	private Logger logger;
 	private CooldownManager cooldown;
 	
-	public GRCommands(GameRanks plugin) {
+	public GRCommands(GameRanks plugin, GRConfiguration users) {
 		this.plugin = plugin;
 		this.logger = plugin.getLogger();
+		this.cooldown = new CooldownManager(users);
 	}
 	
 	@Override
