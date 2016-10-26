@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.OfflinePlayer;
 
 import io.voidpowered.gameranks.config.GRConfiguration;
+import io.voidpowered.gameranks.util.CooldownType;
 
 public class CooldownManager {
 	private GRConfiguration users;
@@ -13,12 +14,14 @@ public class CooldownManager {
 		this.users = users;
 	}
 	
+	
+	
 	/**
 	 * Set the cooldown begin time for a player.
 	 * @param player Player
 	 * @param type Type of cooldown
 	 */
-	public void setCooldown(OfflinePlayer player, String type){
+	public void setCooldown(OfflinePlayer player, CooldownType type){
 		if(player == null || type == null){
 			return;
 		}
@@ -30,7 +33,7 @@ public class CooldownManager {
 	 * @param uuid UUID of Player
 	 * @param type Type of cooldown
 	 */
-	public void setCooldown(UUID uuid, String type){
+	public void setCooldown(UUID uuid, CooldownType type){
 		if(uuid == null || type == null){
 			return;
 		}
@@ -45,10 +48,10 @@ public class CooldownManager {
 	 * @param cooldown Cooldown time (seconds)
 	 * @return Is player cooled down
 	 */
-	public boolean isCooling(UUID uuid, String type, Integer cooldown){
+	public boolean isCooling(UUID uuid, CooldownType type, Long cooldown){
 		if(uuid == null || type == null){
 			return true; // Just say the player is cooling down if the request is invalid.
 		}
-		return (System.currentTimeMillis() - users.getConfig().getInt("users." + uuid.toString() + ".cooldown." + type) > cooldown*1000) ? false : true;
+		return (System.currentTimeMillis() - users.getConfig().getLong("users." + uuid.toString() + ".cooldown." + type) > cooldown*1000) ? false : true;
 	}
 }

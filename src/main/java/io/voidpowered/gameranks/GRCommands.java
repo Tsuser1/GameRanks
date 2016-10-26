@@ -18,6 +18,7 @@ import io.voidpowered.gameranks.config.Language;
 import io.voidpowered.gameranks.manager.CooldownManager;
 import io.voidpowered.gameranks.manager.RankManager;
 import io.voidpowered.gameranks.manager.VaultManager;
+import io.voidpowered.gameranks.util.CooldownType;
 import net.milkbowl.vault.economy.Economy;
 
 public final class GRCommands implements CommandExecutor {
@@ -71,16 +72,16 @@ public final class GRCommands implements CommandExecutor {
 						if(!playerNotFound.isEmpty()) {
 							sender.sendMessage(playerNotFound);
 						}
-					} else {
+					} else { // ELSE: Bukkit couldn't find the player, returned null
 						rankManager.applyRank(player, rank);
 					}
-				} else {
+				} else { // ELSE: The rank couldn't be found
 					String rankNotFound = lang.getLanguageString("RankNotFound");
 					if(!rankNotFound.isEmpty()) {
 						sender.sendMessage(rankNotFound);
 					}
 				}
-			} else if(args.length == 1) {
+			} else if(args.length == 1) { // ELSE IF( There is one argument in the command ): Search for specified rank
 				if(sender instanceof Player) {
 					Rank rank = null;
 					for(Rank rankSearch : rankManager.getRanks()) {
@@ -91,23 +92,23 @@ public final class GRCommands implements CommandExecutor {
 					}
 					if(rank != null){
 						rankManager.applyRank((Player) sender, rank);
-					} else {
+					} else { // ELSE: Rank couldn't be found
 						String rankNotFound = lang.getLanguageString("RankNotFound");
 						if(!rankNotFound.isEmpty()) {
 							sender.sendMessage(rankNotFound);
 						}
 					}
-				} else {
+				} else { // ELSE: Sender isn't a player
 					String consoleIsNotAPlayer = lang.getLanguageString("ConsoleIsNotAPlayer");
 					if(!consoleIsNotAPlayer.isEmpty()) {
 						sender.sendMessage(consoleIsNotAPlayer);
 					}
 				}
-			} else {
+			} else { // ELSE: Sender used incorrect arguments
 				//TODO: Add proper usage message implementation
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error&8: &cUsage: /setrank [player] <rank>"));
 			}
-		} else {
+		} else { // ELSE: Sender doesn't have permission to set ranks
 			String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 			if(!noPermissionsError.isEmpty()) {
 				sender.sendMessage(noPermissionsError);
@@ -120,7 +121,7 @@ public final class GRCommands implements CommandExecutor {
 		Language lang = plugin.lang;
 		if(sender.hasPermission("gameranks.commands.ranks")) {
 			RankManager rankManager = plugin.rankManager;
-			if(args.length > 0 && (args.length > 0) ? plugin.rankManager.rankExists(args[0]) : false) {
+			if((args.length > 0) ? plugin.rankManager.rankExists(args[0]) : false) {
 				String arg = args[0];
 				Rank rank = null;
 				for(Rank rankSearch : rankManager.getRanks()) {
@@ -135,19 +136,19 @@ public final class GRCommands implements CommandExecutor {
 						for(String line : description) {
 							sender.sendMessage(ChatColor.translateAlternateColorCodes('&', line));
 						}
-					} else {
+					} else { // ELSE: The rank doesn't have a description
 						String noRankDescription = lang.getLanguageString("NoRankDescription");
 						if(!noRankDescription.isEmpty()) {
 							sender.sendMessage(noRankDescription);
 						}
 					}
-				} else {
+				} else { // ELSE: Rank wasn't found
 					String rankNotFound = lang.getLanguageString("RankNotFound");
 					if(!rankNotFound.isEmpty()) {
 						sender.sendMessage(rankNotFound);
 					}
 				}
-			} else {
+			} else { // ELSE: No rank was specified or was not found
 				Rank[] ranks = rankManager.getRanks().toArray(new Rank[0]);
 				if(ranks.length > 0) {
 					String ranksListLine = lang.getLanguageString("RanksListLine");
@@ -168,7 +169,7 @@ public final class GRCommands implements CommandExecutor {
 						}
 						if(index == null) {
 							sender.sendMessage(ChatColor.RED + "Error: Invalid page number!");
-						} else {
+						} else { // ELSE: Page number is valid
 							String ranksListTitle = lang.getLanguageString("RanksListTitle");
 							if(!ranksListTitle.isEmpty()) {
 								//TODO: Add configurable page list format.
@@ -185,14 +186,14 @@ public final class GRCommands implements CommandExecutor {
 							}
 						}
 					}
-				} else {
+				} else { // ELSE: There are no ranks setup to display!
 					String noRanksSetup = lang.getLanguageString("NoRanksSetup");
 					if(!noRanksSetup.isEmpty()) {
 						sender.sendMessage(noRanksSetup);
 					}
 				}
 			}
-		} else {
+		} else { // ELSE: Sender doesn't have permission to view all ranks
 			String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 			if(!noPermissionsError.isEmpty()) {
 				sender.sendMessage(noPermissionsError);
@@ -220,7 +221,7 @@ public final class GRCommands implements CommandExecutor {
 									logger.log(Level.WARNING, "Error in language file with format of CurrentPlayerRank, please correct.", e);
 								}
 							}
-						} else {
+						} else { // ELSE: Target has no rank to report
 							String playerHasNoRank = lang.getLanguageString("PlayerHasNoRank");
 							if(!playerHasNoRank.isEmpty()) {
 								try {
@@ -230,19 +231,19 @@ public final class GRCommands implements CommandExecutor {
 								}
 							}
 						}
-					} else {
+					} else { // ELSE: Target couldn't be found
 						String playerNotFound = lang.getLanguageString("PlayerNotFound");
 						if(!playerNotFound.isEmpty()) {
 							sender.sendMessage(playerNotFound);
 						}
 					}
-				} else {
+				} else { // ELSE: Sender doesn't have permission to view others rank
 					String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 					if(!noPermissionsError.isEmpty()) {
 						sender.sendMessage(noPermissionsError);
 					}
 				}
-			} else {
+			} else { // ELSE: There is no arguments, target is sender
 				if(sender instanceof Player) {
 					Player player = (Player) sender;
 					Rank rank = rankManager.getUserRank(player);
@@ -255,20 +256,20 @@ public final class GRCommands implements CommandExecutor {
 								logger.log(Level.WARNING, "Error in language file with format of CurrentUserRank, please correct.", e);
 							}
 						}
-					} else {
+					} else { // ELSE: Sender has no rank
 						String userHasNoRank = lang.getLanguageString("UserHasNoRank");
 						if(!userHasNoRank.isEmpty()) {
 							sender.sendMessage(userHasNoRank);
 						}
 					}
-				} else {
+				} else { // ELSE: Sender isn't a player
 					String consoleIsNotAPlayer = lang.getLanguageString("ConsoleIsNotAPlayer");
 					if(!consoleIsNotAPlayer.isEmpty()) {
 						sender.sendMessage(consoleIsNotAPlayer);
 					}
 				}
 			}
-		} else {
+		} else { // ELSE: Sender doesn't have permission to use rank info
 			String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 			if(!noPermissionsError.isEmpty()) {
 				sender.sendMessage(noPermissionsError);
@@ -299,52 +300,51 @@ public final class GRCommands implements CommandExecutor {
 										logger.log(Level.WARNING, "Error in language file with format of PlayerMaximumRank, please correct.", e);
 									}
 								}								
-							} else {
+							} else { // ELSE: Player is not at maximum rank
 								if(sender instanceof Player) {
 									Player executor = (Player) sender;
 									Economy economy = vaultManager.getEconomy();
 									// Check if TARGET has required permissions to rankup to that
 									if(((player.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankup.*")) && plugin.usePermissions) || !plugin.usePermissions){
 										if(economy.getBalance(executor) >= newRank.getPrice()) {
-											if(economy.withdrawPlayer(executor, newRank.getPrice()).transactionSuccess() && !cooldown.isCooling(player.getUniqueId(), "rankup", 30)) {
-												plugin.getLogger().info("DEBUG> isCooling 30:" + cooldown.isCooling(player.getUniqueId(), "rankup", 30));
-												plugin.getLogger().info("DEBUG> isCooling 300:" + cooldown.isCooling(player.getUniqueId(), "rankup", 300));
-												plugin.getLogger().info("DEBUG> isCooling 3000:" + cooldown.isCooling(player.getUniqueId(), "rankup", 3000));
-												rankManager.applyRank(player, newRank);
-												rankManager.setUserRank(player, newRank);
-												cooldown.setCooldown(executor.getUniqueId(), "rankup");
-												newRank = rankManager.getUserRank(player);
-												String playerRankUp = lang.getLanguageString("PlayerRankUp");
-												if(!playerRankUp.isEmpty()) {
-													try {
-														sender.sendMessage(String.format(playerRankUp, player.getName(), newRank.getName()));
-													} catch(IllegalFormatException e) {
-														logger.log(Level.WARNING, "Error in language file with format of PlayerRankUp, please correct.", e);
+											if(!cooldown.isCooling(player.getUniqueId(), CooldownType.RANKUP, 3L)){
+												if(economy.withdrawPlayer(executor, newRank.getPrice()).transactionSuccess()) {
+													rankManager.applyRank(player, newRank);
+													rankManager.setUserRank(player, newRank);
+													cooldown.setCooldown(executor.getUniqueId(), CooldownType.RANKUP);
+													newRank = rankManager.getUserRank(player);
+													String playerRankUp = lang.getLanguageString("PlayerRankUp");
+													if(!playerRankUp.isEmpty()) {
+														try {
+															sender.sendMessage(String.format(playerRankUp, player.getName(), newRank.getName()));
+														} catch(IllegalFormatException e) {
+															logger.log(Level.WARNING, "Error in language file with format of PlayerRankUp, please correct.", e);
+														}
 													}
 												}
-											} else {
-												String playerInCooldown = lang.getLanguageString("PlayerInCooldown");
-												if(!playerInCooldown.isEmpty()) {
-													try {
-														sender.sendMessage(String.format(playerInCooldown, player.getName()));
-													} catch(IllegalFormatException e) {
-														logger.log(Level.WARNING, "Error in language file with format of PlayerInCooldown, please correct.", e);
+											} else { // ELSE: Target is still in rankup command cooldown
+													String playerInCooldown = lang.getLanguageString("PlayerInCooldown");
+													if(!playerInCooldown.isEmpty()) {
+														try {
+															sender.sendMessage(String.format(playerInCooldown, player.getName()));
+														} catch(IllegalFormatException e) {
+															logger.log(Level.WARNING, "Error in language file with format of PlayerInCooldown, please correct.", e);
+														}
 													}
 												}
-											}
-										} else {
+										} else { // ELSE: Sender doesn't have enough money to rankup target
 											String lackOfFunds = lang.getLanguageString("LackOfFunds");
 											if(!lackOfFunds.isEmpty()) {
 												sender.sendMessage(lackOfFunds);
 											}
 										}
-									} else {
+									} else { // ELSE: Target doesn't have the specific permission to rank up that rank.
 										String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 										if(!noPermissionsError.isEmpty()) {
 											sender.sendMessage(noPermissionsError);
 										}
 									}
-								} else {
+								} else { // ELSE: Sender isn't a player *Bypasses economy*
 									rankManager.applyRank(player, newRank);
 									rankManager.setUserRank(player, newRank);
 									newRank = rankManager.getUserRank(player);
@@ -359,7 +359,7 @@ public final class GRCommands implements CommandExecutor {
 									}
 								}
 							}
-						} else {
+						} else { // ELSE: Target has no rank!
 							String playerHasNoRank = lang.getLanguageString("PlayerHasNoRank");
 							if(!playerHasNoRank.isEmpty()) {
 								try {
@@ -369,19 +369,19 @@ public final class GRCommands implements CommandExecutor {
 								}
 							}
 						}
-					} else {
+					} else { // ELSE: Target's rank cannot be found
 						String playerNotFound = lang.getLanguageString("PlayerNotFound");
 						if(!playerNotFound.isEmpty()) {
 							sender.sendMessage(playerNotFound);
 						}
 					}
-				} else {
+				} else { // ELSE: Sender doesn't have the permission to rankup other players
 					String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 					if(!noPermissionsError.isEmpty()) {
 						sender.sendMessage(noPermissionsError);
 					}
 				}
-			} else {
+			} else { // ELSE: There is no target, execute on the sender
 				if(sender instanceof Player) {
 					Player player = (Player) sender;
 					Rank rank = rankManager.getUserRank(player);
@@ -392,26 +392,28 @@ public final class GRCommands implements CommandExecutor {
 							if(!userMaximumRank.isEmpty()) {
 								sender.sendMessage(userMaximumRank);
 							}
-						} else {
+						} else { // ELSE: The is another rank above this one to rankup to
 							Economy economy = vaultManager.getEconomy();
 							// Check if player has required permissions to rankup to that rank.
 							if(((sender.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || sender.hasPermission("gameranks.rankup.*")) && plugin.usePermissions) || !plugin.usePermissions){
 								if(economy.getBalance(player) >= newRank.getPrice()) {
 									//TODO: Add configuration option for cooldown times
-									if(economy.withdrawPlayer(player, newRank.getPrice()).transactionSuccess() && !cooldown.isCooling(player.getUniqueId(), "rankup", 30)) {
-										rankManager.applyRank(player, newRank);
-										rankManager.setUserRank(player, newRank);
-										newRank = rankManager.getUserRank(player);
-										cooldown.setCooldown((Player) sender, "rankup");
-										String userRankUp = lang.getLanguageString("UserRankUp");
-										if(!userRankUp.isEmpty()) {
-											try {
-												sender.sendMessage(String.format(userRankUp, newRank.getName()));
-											} catch(IllegalFormatException e) {
-												logger.log(Level.WARNING, "Error in language file with format of UserRankUp, please correct.", e);
+									if(!cooldown.isCooling(player.getUniqueId(), CooldownType.RANKUP, 3L)){
+										if(economy.withdrawPlayer(player, newRank.getPrice()).transactionSuccess()) {
+											rankManager.applyRank(player, newRank);
+											rankManager.setUserRank(player, newRank);
+											newRank = rankManager.getUserRank(player);
+											cooldown.setCooldown((Player) sender, CooldownType.RANKUP);
+											String userRankUp = lang.getLanguageString("UserRankUp");
+											if(!userRankUp.isEmpty()) {
+												try {
+													sender.sendMessage(String.format(userRankUp, newRank.getName()));
+												} catch(IllegalFormatException e) {
+													logger.log(Level.WARNING, "Error in language file with format of UserRankUp, please correct.", e);
+												}
 											}
 										}
-									} else {
+									} else { // ELSE: Player is still in a rankup cooldown
 										String playerInCooldown = lang.getLanguageString("PlayerInCooldown");
 										if(!playerInCooldown.isEmpty()) {
 											try {
@@ -421,21 +423,21 @@ public final class GRCommands implements CommandExecutor {
 											}
 										}
 									}
-								} else {
+								} else { // ELSE: Player doesn't have enough money.
 									String lackOfFunds = lang.getLanguageString("LackOfFunds");
 									if(!lackOfFunds.isEmpty()) {
 										sender.sendMessage(lackOfFunds);
 									}
 									sender.sendMessage(ChatColor.RED + "You need " + economy.format(newRank.getPrice() - economy.getBalance(player)) + " more to rankup!");
 								}
-							} else {
+							} else { // ELSE: Player doesn't have the specific permission to rankup to that rank
 								String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 								if(!noPermissionsError.isEmpty()) {
 									sender.sendMessage(noPermissionsError);
 								}
 							}
 						}
-					} else {
+					} else { // ELSE: Player doesn't have a rank
 						String userHasNoRank = lang.getLanguageString("UserHasNoRank");
 						if(!userHasNoRank.isEmpty()) {
 							try {
@@ -445,14 +447,14 @@ public final class GRCommands implements CommandExecutor {
 							}
 						}
 					}
-				} else {
+				} else { // ELSE: Sender isn't a player
 					String consoleIsNotAPlayer = lang.getLanguageString("ConsoleIsNotAPlayer");
 					if(!consoleIsNotAPlayer.isEmpty()) {
 						sender.sendMessage(consoleIsNotAPlayer);
 					}
 				}
 			}
-		} else {
+		} else { // ELSE: Player doesn't have the permissions for the rankup command
 			String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 			if(!noPermissionsError.isEmpty()) {
 				sender.sendMessage(noPermissionsError);
@@ -487,21 +489,23 @@ public final class GRCommands implements CommandExecutor {
 								if(sender instanceof Player) {
 									// Check if TARGET has needed permissions to rankdown
 									if(((player.hasPermission("gameranks.rankdown." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankdown.*")) && plugin.usePermissions) || !plugin.usePermissions){
-										Economy economy = vaultManager.getEconomy();
-										if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess() && !cooldown.isCooling(player.getUniqueId(), "rankdown", 30)) {
-											rankManager.applyRank(player, newRank);
-											rankManager.setUserRank(player, newRank);
-											newRank = rankManager.getUserRank(player);
-											cooldown.setCooldown(player, "rankdown");
-											String playerRankDown = lang.getLanguageString("PlayerRankDown");
-											if(!playerRankDown.isEmpty()) {
-												try {
-													sender.sendMessage(String.format(playerRankDown, player.getName(), newRank.getName()));
-												} catch(IllegalFormatException e) {
-													logger.log(Level.WARNING, "Error in language file with format of PlayerRankDown, please correct.", e);
+										if(!cooldown.isCooling(player.getUniqueId(), CooldownType.RANKDOWN, 3L)){
+											Economy economy = vaultManager.getEconomy();
+											if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess()) {
+												rankManager.applyRank(player, newRank);
+												rankManager.setUserRank(player, newRank);
+												newRank = rankManager.getUserRank(player);
+												cooldown.setCooldown(player, CooldownType.RANKDOWN);
+												String playerRankDown = lang.getLanguageString("PlayerRankDown");
+												if(!playerRankDown.isEmpty()) {
+													try {
+														sender.sendMessage(String.format(playerRankDown, player.getName(), newRank.getName()));
+													} catch(IllegalFormatException e) {
+														logger.log(Level.WARNING, "Error in language file with format of PlayerRankDown, please correct.", e);
+													}
 												}
 											}
-										} else {
+										} else { // ELSE: Player is still cooling down from a rankdown
 											String playerInCooldown = lang.getLanguageString("PlayerInCooldown");
 											if(!playerInCooldown.isEmpty()) {
 												try {
@@ -511,13 +515,13 @@ public final class GRCommands implements CommandExecutor {
 												}
 											}
 										}
-									} else {
+									} else { // ELSE: Target player doesn't have the needed permission to rankdown to that rank
 										String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 										if(!noPermissionsError.isEmpty()) {
 											sender.sendMessage(noPermissionsError);
 										}
 									}
-								} else {
+								} else { // ELSE: The executor of the command isn't a player
 									rankManager.applyRank(player, newRank);
 									rankManager.setUserRank(player, newRank);
 									newRank = rankManager.getUserRank(player);
@@ -532,7 +536,7 @@ public final class GRCommands implements CommandExecutor {
 									}
 								}
 							}
-						} else {
+						} else { // ELSE: Target player doesn't have a rank
 							String playerHasNoRank = lang.getLanguageString("PlayerHasNoRank");
 							if(!playerHasNoRank.isEmpty()) {
 								try {
@@ -542,19 +546,19 @@ public final class GRCommands implements CommandExecutor {
 								}
 							}
 						}
-					} else {
+					} else { // ELSE: Bukkit couldn't get the player and returned null
 						String playerNotFound = lang.getLanguageString("PlayerNotFound");
 						if(!playerNotFound.isEmpty()) {
 							sender.sendMessage(playerNotFound);
 						}
 					}
-				} else {
+				} else { // ELSE: Player doesn't have permission to rankdown other people.
 					String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 					if(!noPermissionsError.isEmpty()) {
 						sender.sendMessage(noPermissionsError);
 					}
 				}
-			} else {
+			} else { // ELSE: There is no arguments, execute on the sender instead of a target
 				if(sender instanceof Player) {
 					Player player = (Player) sender;
 					Rank rank = rankManager.getUserRank(player);
@@ -565,23 +569,25 @@ public final class GRCommands implements CommandExecutor {
 							if(!userMinimumRank.isEmpty()) {
 								sender.sendMessage(userMinimumRank);
 							}
-						} else {
+						} else { // ELSE: There is a lower rank, rankdown possible
 							if(((player.hasPermission("gameranks.rankdown." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankdown.*")) && plugin.usePermissions) || !plugin.usePermissions){
 								Economy economy = vaultManager.getEconomy();
-								if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess() && !cooldown.isCooling(player.getUniqueId(), "rankdown", 30)) {
-									rankManager.applyRank(player, newRank);
-									rankManager.setUserRank(player, newRank);
-									newRank = rankManager.getUserRank(player);
-									cooldown.setCooldown(player, "rankdown");
-									String userRankDown = lang.getLanguageString("UserRankDown");
-									if(!userRankDown.isEmpty()) {
-										try {
-											sender.sendMessage(String.format(userRankDown, newRank.getName()));
-										} catch(IllegalFormatException e) {
-											logger.log(Level.WARNING, "Error in language file with format of UserRankDown, please correct.", e);
+								if(!cooldown.isCooling(player.getUniqueId(), CooldownType.RANKDOWN, 3L)){
+									if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess()) {
+										rankManager.applyRank(player, newRank);
+										rankManager.setUserRank(player, newRank);
+										newRank = rankManager.getUserRank(player);
+										cooldown.setCooldown(player, CooldownType.RANKDOWN);
+										String userRankDown = lang.getLanguageString("UserRankDown");
+										if(!userRankDown.isEmpty()) {
+											try {
+												sender.sendMessage(String.format(userRankDown, newRank.getName()));
+											} catch(IllegalFormatException e) {
+												logger.log(Level.WARNING, "Error in language file with format of UserRankDown, please correct.", e);
+											}
 										}
 									}
-								} else {
+								} else { // ELSE: If player is still cooling down
 									String playerInCooldown = lang.getLanguageString("PlayerInCooldown");
 									if(!playerInCooldown.isEmpty()) {
 										try {
@@ -591,14 +597,14 @@ public final class GRCommands implements CommandExecutor {
 										}
 									}
 								}
-							} else {
+							} else { // ELSE: Player doesn't have permission to rankdown to that rank
 								String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 								if(!noPermissionsError.isEmpty()) {
 									sender.sendMessage(noPermissionsError);
 								}
 							}
 						}
-					} else {
+					} else { // ELSE: Player doesn't have a rank
 						String userHasNoRank = lang.getLanguageString("UserHasNoRank");
 						if(!userHasNoRank.isEmpty()) {
 							try {
@@ -608,14 +614,14 @@ public final class GRCommands implements CommandExecutor {
 							}
 						}
 					}
-				} else {
+				} else { // ELSE: Player isn't actually a player
 					String consoleIsNotAPlayer = lang.getLanguageString("ConsoleIsNotAPlayer");
 					if(!consoleIsNotAPlayer.isEmpty()) {
 						sender.sendMessage(consoleIsNotAPlayer);
 					}
 				}
 			}
-		} else {
+		} else { // ELSE: Player doesn't have the permissions to command rankdown
 			String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 			if(!noPermissionsError.isEmpty()) {
 				sender.sendMessage(noPermissionsError);
@@ -668,10 +674,10 @@ public final class GRCommands implements CommandExecutor {
 						sender.sendMessage(lang.getLanguageString("CommandNotFound"));
 						break;
 				}
-			} else {
+			} else { // ELSE: The isn't enough arguments in the command
 				showHelp(sender);
 			}
-		} else {
+		} else { // ELSE: Player doesn't have permissions to the command gameranks
 			String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 			if(!noPermissionsError.isEmpty()) {
 				sender.sendMessage(noPermissionsError);
@@ -704,7 +710,7 @@ public final class GRCommands implements CommandExecutor {
 			if(!helpFooter.isEmpty()) {
 				sender.sendMessage(helpFooter);
 			}
-		} else {
+		} else { // ELSE: Player doesn't have permissions to the command gameranks. How did they get here?
 			String noPermissionsError = lang.getLanguageString("NoPermissionsError");
 			if(!noPermissionsError.isEmpty()) {
 				sender.sendMessage(noPermissionsError);
