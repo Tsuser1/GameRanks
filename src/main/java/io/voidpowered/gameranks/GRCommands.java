@@ -14,6 +14,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 
 import io.voidpowered.gameranks.api.Rank;
 import io.voidpowered.gameranks.config.Language;
+import io.voidpowered.gameranks.manager.CooldownManager;
 import io.voidpowered.gameranks.manager.RankManager;
 import io.voidpowered.gameranks.manager.VaultManager;
 import net.milkbowl.vault.economy.Economy;
@@ -22,6 +23,7 @@ public final class GRCommands implements CommandExecutor {
 
 	private GameRanks plugin;
 	private Logger logger;
+	private CooldownManager cooldown;
 	
 	public GRCommands(GameRanks plugin) {
 		this.plugin = plugin;
@@ -100,6 +102,7 @@ public final class GRCommands implements CommandExecutor {
 					}
 				}
 			} else {
+				//TODO: Add proper usage message implementation
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4Error&8: &cUsage: /setrank [player] <rank>"));
 			}
 		} else {
@@ -166,7 +169,8 @@ public final class GRCommands implements CommandExecutor {
 						} else {
 							String ranksListTitle = lang.getLanguageString("RanksListTitle");
 							if(!ranksListTitle.isEmpty()) {
-								sender.sendMessage(ranksListTitle + ChatColor.DARK_GRAY + " [" + ChatColor.GREEN + index + ChatColor.GRAY + "/" + ChatColor.GREEN + Integer.valueOf(ranks.length / 8 + (ranks.length % 8 > 0 ? 1 : 0)) + ChatColor.DARK_GRAY + "]");
+								//TODO: Add configurable page list format.
+								sender.sendMessage(ranksListTitle + ChatColor.DARK_GRAY + " <" + ChatColor.GREEN + index + ChatColor.DARK_GRAY + "/" + ChatColor.GREEN + Integer.valueOf(ranks.length / 8 + (ranks.length % 8 > 0 ? 1 : 0)) + ChatColor.DARK_GRAY + ">");
 							}
 							// Calculate start position
 							index = (ranks.length < 9) ? 0 : (index != 1) ? ((index - 1) * 8 + 1) : ((index - 1) * 8);
@@ -300,9 +304,10 @@ public final class GRCommands implements CommandExecutor {
 									// Check if TARGET has required permissions to rankup to that
 									if(((player.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankup.*")) && plugin.usePermissions) || !plugin.usePermissions){
 										if(economy.getBalance(executor) >= newRank.getPrice()) {
-											if(economy.withdrawPlayer(executor, newRank.getPrice()).transactionSuccess()) {
+											if(economy.withdrawPlayer(executor, newRank.getPrice()).transactionSuccess() && cooldown.isCooling(player.getUniqueId(), "rankup", 30)) {
 												rankManager.applyRank(player, newRank);
 												rankManager.setUserRank(player, newRank);
+												cooldown.setCooldown(executor.getUniqueId(), "rankup");
 												newRank = rankManager.getUserRank(player);
 												String playerRankUp = lang.getLanguageString("PlayerRankUp");
 												if(!playerRankUp.isEmpty()) {
@@ -310,6 +315,15 @@ public final class GRCommands implements CommandExecutor {
 														sender.sendMessage(String.format(playerRankUp, player.getName(), newRank.getName()));
 													} catch(IllegalFormatException e) {
 														logger.log(Level.WARNING, "Error in language file with format of PlayerRankUp, please correct.", e);
+													}
+												}
+											} else {
+												String playerInCooldown = lang.getLanguageString("PlayerInCooldown");
+												if(!playerInCooldown.isEmpty()) {
+													try {
+														sender.sendMessage(String.format(playerInCooldown, player.getName()));
+													} catch(IllegalFormatException e) {
+														logger.log(Level.WARNING, "Error in language file with format of PlayerInCooldown, please correct.", e);
 													}
 												}
 											}
@@ -378,17 +392,27 @@ public final class GRCommands implements CommandExecutor {
 							// Check if player has required permissions to rankup to that rank.
 							if(((sender.hasPermission("gameranks.rankup." + newRank.getName().toLowerCase()) || sender.hasPermission("gameranks.rankup.*")) && plugin.usePermissions) || !plugin.usePermissions){
 								if(economy.getBalance(player) >= newRank.getPrice()) {
-									if(economy.withdrawPlayer(player, newRank.getPrice()).transactionSuccess()) {
+									//TODO: Add configuration option for cooldown times
+									if(economy.withdrawPlayer(player, newRank.getPrice()).transactionSuccess() && cooldown.isCooling(player.getUniqueId(), "rankup", 30)) {
 										rankManager.applyRank(player, newRank);
 										rankManager.setUserRank(player, newRank);
 										newRank = rankManager.getUserRank(player);
-										
+										cooldown.setCooldown((Player) sender, "rankup");
 										String userRankUp = lang.getLanguageString("UserRankUp");
 										if(!userRankUp.isEmpty()) {
 											try {
 												sender.sendMessage(String.format(userRankUp, newRank.getName()));
 											} catch(IllegalFormatException e) {
 												logger.log(Level.WARNING, "Error in language file with format of UserRankUp, please correct.", e);
+											}
+										}
+									} else {
+										String playerInCooldown = lang.getLanguageString("PlayerInCooldown");
+										if(!playerInCooldown.isEmpty()) {
+											try {
+												sender.sendMessage(String.format(playerInCooldown, player.getName()));
+											} catch(IllegalFormatException e) {
+												logger.log(Level.WARNING, "Error in language file with format of PlayerInCooldown, please correct.", e);
 											}
 										}
 									}
@@ -459,17 +483,26 @@ public final class GRCommands implements CommandExecutor {
 									// Check if TARGET has needed permissions to rankdown
 									if(((player.hasPermission("gameranks.rankdown." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankdown.*")) && plugin.usePermissions) || !plugin.usePermissions){
 										Economy economy = vaultManager.getEconomy();
-										if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess()) {
+										if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess() && cooldown.isCooling(player.getUniqueId(), "rankdown", 30)) {
 											rankManager.applyRank(player, newRank);
 											rankManager.setUserRank(player, newRank);
 											newRank = rankManager.getUserRank(player);
-											
+											cooldown.setCooldown(player, "rankdown");
 											String playerRankDown = lang.getLanguageString("PlayerRankDown");
 											if(!playerRankDown.isEmpty()) {
 												try {
 													sender.sendMessage(String.format(playerRankDown, player.getName(), newRank.getName()));
 												} catch(IllegalFormatException e) {
 													logger.log(Level.WARNING, "Error in language file with format of PlayerRankDown, please correct.", e);
+												}
+											}
+										} else {
+											String playerInCooldown = lang.getLanguageString("PlayerInCooldown");
+											if(!playerInCooldown.isEmpty()) {
+												try {
+													sender.sendMessage(String.format(playerInCooldown, player.getName()));
+												} catch(IllegalFormatException e) {
+													logger.log(Level.WARNING, "Error in language file with format of PlayerInCooldown, please correct.", e);
 												}
 											}
 										}
@@ -530,17 +563,26 @@ public final class GRCommands implements CommandExecutor {
 						} else {
 							if(((player.hasPermission("gameranks.rankdown." + newRank.getName().toLowerCase()) || player.hasPermission("gameranks.rankdown.*")) && plugin.usePermissions) || !plugin.usePermissions){
 								Economy economy = vaultManager.getEconomy();
-								if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess()) {
+								if(economy.depositPlayer(player, rank.getRefund()).transactionSuccess() && cooldown.isCooling(player.getUniqueId(), "rankdown", 30)) {
 									rankManager.applyRank(player, newRank);
 									rankManager.setUserRank(player, newRank);
 									newRank = rankManager.getUserRank(player);
-									
+									cooldown.setCooldown(player, "rankdown");
 									String userRankDown = lang.getLanguageString("UserRankDown");
 									if(!userRankDown.isEmpty()) {
 										try {
 											sender.sendMessage(String.format(userRankDown, newRank.getName()));
 										} catch(IllegalFormatException e) {
 											logger.log(Level.WARNING, "Error in language file with format of UserRankDown, please correct.", e);
+										}
+									}
+								} else {
+									String playerInCooldown = lang.getLanguageString("PlayerInCooldown");
+									if(!playerInCooldown.isEmpty()) {
+										try {
+											sender.sendMessage(String.format(playerInCooldown, player.getName()));
+										} catch(IllegalFormatException e) {
+											logger.log(Level.WARNING, "Error in language file with format of PlayerInCooldown, please correct.", e);
 										}
 									}
 								}
