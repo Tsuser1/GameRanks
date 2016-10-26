@@ -48,10 +48,10 @@ public class CooldownManager {
 	 * @param cooldown Cooldown time (seconds)
 	 * @return Is player cooled down
 	 */
-	public boolean isCooling(UUID uuid, CooldownType type, Long cooldown){
+	public boolean isCooling(UUID uuid, CooldownType type){
 		if(uuid == null || type == null){
 			return true; // Just say the player is cooling down if the request is invalid.
 		}
-		return (System.currentTimeMillis() - users.getConfig().getLong("users." + uuid.toString() + ".cooldown." + type) > cooldown*1000) ? false : true;
+		return (System.currentTimeMillis() - users.getConfig().getLong("users." + uuid.toString() + ".cooldown." + type) > type.getDuration()*1000) ? false : true;
 	}
 }

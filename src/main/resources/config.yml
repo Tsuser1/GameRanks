@@ -5,3 +5,8 @@ version: 0.1
 lang: en_GB
 # Use per-rank permissions
 rankPermissions: false
+# Cooldowns - Time is in seconds, decimals allowed. (1.5 = one and a half seconds)
+cooldowns:
+  rankup: 3
+  rankdown: 3
+  list: 3

@@ -17,6 +17,7 @@ import io.voidpowered.gameranks.config.GRConfiguration;
 import io.voidpowered.gameranks.config.Language;
 import io.voidpowered.gameranks.manager.RankManager;
 import io.voidpowered.gameranks.manager.VaultManager;
+import io.voidpowered.gameranks.util.CooldownType;
 import io.voidpowered.gameranks.util.GameRanksException;
 
 public final class GameRanks extends JavaPlugin {
@@ -73,6 +74,7 @@ public final class GameRanks extends JavaPlugin {
 			// setup essential configuration
 			loadLanguage();
 			loadPermissions();
+			loadCooldowns();
 			// setup commands
 			commands = new GRCommands(this, users);
 			getCommand("ranks").setExecutor(commands);
@@ -105,16 +107,17 @@ public final class GameRanks extends JavaPlugin {
 		boolean perms;
 		if(config.isSet("rankPermissions")) {
 			if(config.isBoolean("rankPermissions")) {
-				perms = config.getBoolean("usePermissions");
+				perms = config.getBoolean("rankPermissions");
 			} else {
-				config.set("usePermissions", perms = false);
+				config.set("rankPermissions", perms = false);
 				this.config.saveConfig();
 			}
 		}  else {
-			config.set("usePermissions", perms = false);
+			config.set("rankPermissions", perms = false);
 			this.config.saveConfig();
 		}
 		usePermissions = perms;
+		logger.info("Finished loading permissions settings!");
 	}
 	
 	/**
@@ -136,6 +139,7 @@ public final class GameRanks extends JavaPlugin {
 		}
 		lang = new Language(this, langName);
 		lang.saveDefaultConfig();
+		logger.info("Finished loading language file!");
 	}
 	
 	@Override
@@ -144,6 +148,22 @@ public final class GameRanks extends JavaPlugin {
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			removePlayer(player);
 		}
+	}
+	
+	/**
+	 * Load and set cooldowns from configuration.
+	 */
+	private void loadCooldowns(){
+		FileConfiguration config = this.config.getConfig();
+		for(String key : config.getConfigurationSection("cooldowns").getKeys(false)){
+			try{
+				CooldownType.valueOf(key.toUpperCase()).setDuration(config.getLong("cooldowns." + key, 3L));
+			} catch(IllegalArgumentException ex){
+				logger.severe("Critical error: " + ex.getMessage());
+				logger.severe("Invalid argument " + key + " in GameRanks config cooldown section!");
+			}
+		}
+		logger.info("Finished loading cooldowns from configuration!");
 	}
 	
 	/**
@@ -198,10 +218,12 @@ public final class GameRanks extends JavaPlugin {
 		rankManager.clear();
 		rankManager.load();
 		loadLanguage();
+		loadCooldowns();
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			removePlayer(player);
 			addPlayer(player);
 		}
+		logger.info("Done: Reloaded all files/settings for GameRanks");
 	}
 	
 	/**
