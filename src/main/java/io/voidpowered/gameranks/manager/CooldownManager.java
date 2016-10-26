@@ -9,6 +9,10 @@ import io.voidpowered.gameranks.config.GRConfiguration;
 public class CooldownManager {
 	private GRConfiguration users;
 	
+	public CooldownManager(GRConfiguration users){
+		this.users = users;
+	}
+	
 	/**
 	 * Set the cooldown begin time for a player.
 	 * @param player Player
