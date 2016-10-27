@@ -635,6 +635,8 @@ public final class GRCommands implements CommandExecutor {
 		if(sender.hasPermission("gameranks.commands.gameranks")) {
 			if(args.length > 0) {
 				switch(args[0].toLowerCase()) {
+					case "v": // Alias for version
+					case "ver": // Alias for version
 					case "version":
 						if(sender.hasPermission("gameranks.commands.gameranks.version")) {
 							PluginDescriptionFile pluginDesc = plugin.getDescription();
@@ -667,6 +669,7 @@ public final class GRCommands implements CommandExecutor {
 							}
 						}
 						break;
+					case "?": // Alias for help
 					case "help": 
 						showHelp(sender);
 						break;

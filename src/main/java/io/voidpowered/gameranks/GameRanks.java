@@ -19,6 +19,7 @@ import io.voidpowered.gameranks.manager.RankManager;
 import io.voidpowered.gameranks.manager.VaultManager;
 import io.voidpowered.gameranks.util.CooldownType;
 import io.voidpowered.gameranks.util.GameRanksException;
+import io.voidpowered.gameranks.util.Updater;
 
 public final class GameRanks extends JavaPlugin {
 
@@ -31,6 +32,7 @@ public final class GameRanks extends JavaPlugin {
 	
 	private GRConfiguration config, users, ranks;
 	private GRCommands commands;
+	private Updater updater;
 	
 	private Logger logger;
 
@@ -83,6 +85,7 @@ public final class GameRanks extends JavaPlugin {
 			getCommand("rankdown").setExecutor(commands);
 			getCommand("gameranks").setExecutor(commands);
 			logger.info("GameRanks has enabled succesfully.");
+			new Updater(this).checkUpdates();
 		} catch(GameRanksException | NoClassDefFoundError e) {
 			setEnabled(false);
 			if(e instanceof NoClassDefFoundError) {
@@ -224,6 +227,7 @@ public final class GameRanks extends JavaPlugin {
 			addPlayer(player);
 		}
 		logger.info("Done: Reloaded all files/settings for GameRanks");
+		new Updater(this).checkUpdates();
 	}
 	
 	/**
