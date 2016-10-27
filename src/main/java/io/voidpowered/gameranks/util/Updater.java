@@ -9,6 +9,18 @@ import org.bukkit.ChatColor;
 
 import io.voidpowered.gameranks.GameRanks;
 
+/* [ Build types reference for *GLOBAL* distribution ]
+ * TESTING LEVEL - SHORT - DESC.
+ * ZERO testing  : ALL   : Any published build (Untested)
+ * SOME testing  : EDG   : Bleeding edge
+ * MOSTLY tested : DEV   : Latest beta build
+ * FULLY tested  : PUB   : Completely stable builds
+*/
+
+/**
+ * Update notifications for GameRanks. Uses the GameRanks global distribution standards (ALL, EDG, DEV, and PUB). See source for full information and documentation of the class and standard.
+ * @author Tsuser1
+ */
 public class Updater {
 	GameRanks plugin;
 
@@ -26,13 +38,12 @@ public class Updater {
 				BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 				String str;
 				while ((str = br.readLine()) != null) {
-					// Build types: EDG - Bleeding edge  DEV - Latest beta build  PUB - Completely stable builds
 					if (str.startsWith(plugin.getConfig().getString("release-type")) && !str.substring(3).startsWith(plugin.getDescription().getVersion())) {
 						String[] updatemsg = str.split(":"); // Return the text after the colon as the update message
 						if(updatemsg.length > 1){
-							plugin.getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + updatemsg[1]);
+							plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "NOTICE: " + ChatColor.DARK_RED + updatemsg[1]);
 						} else {
-							plugin.getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + "Updates were found. Please upgrade!");
+							plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "NOTICE: " + ChatColor.DARK_RED + "Updates were found. Please upgrade!");
 						}
 						return;
 					}

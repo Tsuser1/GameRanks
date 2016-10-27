@@ -45,7 +45,6 @@ public class CooldownManager {
 	 * Check if a player is still in a command cooldown.
 	 * @param uuid UUID of Player
 	 * @param type Type of cooldown
-	 * @param cooldown Cooldown time (seconds)
 	 * @return Is player cooled down
 	 */
 	public boolean isCooling(UUID uuid, CooldownType type){
