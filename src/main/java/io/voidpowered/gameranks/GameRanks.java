@@ -32,8 +32,6 @@ public final class GameRanks extends JavaPlugin {
 	
 	private GRConfiguration config, users, ranks;
 	private GRCommands commands;
-	private Updater updater;
-	
 	private Logger logger;
 
 	@Override
