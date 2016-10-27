@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+
+import org.bukkit.ChatColor;
+
 import io.voidpowered.gameranks.GameRanks;
 
 public class Updater {
@@ -27,9 +30,9 @@ public class Updater {
 					if (str.startsWith(plugin.getConfig().getString("release-type")) && !str.substring(3).startsWith(plugin.getDescription().getVersion())) {
 						String[] updatemsg = str.split(":"); // Return the text after the colon as the update message
 						if(updatemsg.length > 1){
-							plugin.getLogger().info(updatemsg[1]);
+							plugin.getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + updatemsg[1]);
 						} else {
-							plugin.getLogger().info("Updates were found. Please upgrade!");
+							plugin.getServer().getConsoleSender().sendMessage(ChatColor.DARK_RED + "Updates were found. Please upgrade!");
 						}
 						return;
 					}
