@@ -15,6 +15,15 @@ public final class PlayerRankEvent extends Event implements Cancellable {
 		handlers = new HandlerList();
 	}
 	
+	/**
+	 Quick hotfix to resolve mysterious error. Checked compatibility. Minor change.
+	 *** Code not yet optimized/checked ***
+	 Added this class per request at "https://www.spigotmc.org/threads/playerrankevent-error.204764/" to resolve error.
+	**/
+	public static HandlerList getHandlerList(){
+		return handlers;
+	}
+	
 	private final OfflinePlayer player;
 	private final Rank previousRank;
 	private Rank rank;
