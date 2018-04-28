@@ -17,7 +17,9 @@ import io.voidpowered.gameranks.config.GRConfiguration;
 import io.voidpowered.gameranks.config.Language;
 import io.voidpowered.gameranks.manager.RankManager;
 import io.voidpowered.gameranks.manager.VaultManager;
+import io.voidpowered.gameranks.util.CooldownType;
 import io.voidpowered.gameranks.util.GameRanksException;
+import io.voidpowered.gameranks.util.Updater;
 
 public final class GameRanks extends JavaPlugin {
 
@@ -26,10 +28,10 @@ public final class GameRanks extends JavaPlugin {
 	protected VaultManager vaultManager;
 	protected RankManager rankManager;
 	protected Language lang;
+	protected boolean usePermissions;
 	
 	private GRConfiguration config, users, ranks;
 	private GRCommands commands;
-	
 	private Logger logger;
 
 	@Override
@@ -69,16 +71,19 @@ public final class GameRanks extends JavaPlugin {
 			for(Player player : Bukkit.getOnlinePlayers()) {
 				addPlayer(player);
 			}
-			// setup language
+			// setup essential configuration
 			loadLanguage();
+			loadPermissions();
+			loadCooldowns();
 			// setup commands
-			commands = new GRCommands(this);
+			commands = new GRCommands(this, users);
 			getCommand("ranks").setExecutor(commands);
 			getCommand("rank").setExecutor(commands);
 			getCommand("rankup").setExecutor(commands);
 			getCommand("rankdown").setExecutor(commands);
 			getCommand("gameranks").setExecutor(commands);
 			logger.info("GameRanks has enabled succesfully.");
+			new Updater(this).checkUpdates();
 		} catch(GameRanksException | NoClassDefFoundError e) {
 			setEnabled(false);
 			if(e instanceof NoClassDefFoundError) {
@@ -89,12 +94,36 @@ public final class GameRanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Save default configuration values to disk. This is an initial setup function.
+	 */
 	private void saveDefaultConfigs() {
 		(config = new GRConfiguration(this, "config.yml")).saveDefaultConfig();
 		(users = new GRConfiguration(this, "users.yml")).saveDefaultConfig();
 		(ranks = new GRConfiguration(this, "ranks.yml")).saveDefaultConfig();
 	}
 	
+	private void loadPermissions() {
+		FileConfiguration config = this.config.getConfig();
+		boolean perms;
+		if(config.isSet("rankPermissions")) {
+			if(config.isBoolean("rankPermissions")) {
+				perms = config.getBoolean("rankPermissions");
+			} else {
+				config.set("rankPermissions", perms = false);
+				this.config.saveConfig();
+			}
+		}  else {
+			config.set("rankPermissions", perms = false);
+			this.config.saveConfig();
+		}
+		usePermissions = perms;
+		logger.info("Finished loading permissions settings!");
+	}
+	
+	/**
+	 * Load language configuration.
+	 */
 	private void loadLanguage() {
 		FileConfiguration config = this.config.getConfig();
 		String langName;
@@ -111,6 +140,7 @@ public final class GameRanks extends JavaPlugin {
 		}
 		lang = new Language(this, langName);
 		lang.saveDefaultConfig();
+		logger.info("Finished loading language file!");
 	}
 	
 	@Override
@@ -121,6 +151,26 @@ public final class GameRanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Load and set cooldowns from configuration.
+	 */
+	private void loadCooldowns(){
+		FileConfiguration config = this.config.getConfig();
+		for(String key : config.getConfigurationSection("cooldowns").getKeys(false)){
+			try{
+				CooldownType.valueOf(key.toUpperCase()).setDuration(config.getLong("cooldowns." + key, 3L));
+			} catch(IllegalArgumentException ex){
+				logger.severe("Critical error: " + ex.getMessage());
+				logger.severe("Invalid argument " + key + " in GameRanks config cooldown section!");
+			}
+		}
+		logger.info("Finished loading cooldowns from configuration!");
+	}
+	
+	/**
+	 * Setup ranks for a player (usually the first time they join).
+	 * @param player The player to setup values for
+	 */
 	private void addPlayer(Player player) {
 		if(rankManager != null) {
 			boolean playerHasRank = false;
@@ -144,6 +194,10 @@ public final class GameRanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Delete a player from the database.
+	 * @param player The player to be removed
+	 */
 	private void removePlayer(Player player) {
 		if(rankManager != null) {
 			if(rankManager.getUserRank(player) != null) {
@@ -165,10 +219,13 @@ public final class GameRanks extends JavaPlugin {
 		rankManager.clear();
 		rankManager.load();
 		loadLanguage();
+		loadCooldowns();
 		for(Player player : Bukkit.getOnlinePlayers()) {
 			removePlayer(player);
 			addPlayer(player);
 		}
+		logger.info("Done: Reloaded all files/settings for GameRanks");
+		new Updater(this).checkUpdates();
 	}
 	
 	/**

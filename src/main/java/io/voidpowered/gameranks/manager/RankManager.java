@@ -11,14 +11,13 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import io.voidpowered.gameranks.api.Rank;
-import io.voidpowered.gameranks.api.event.PlayerRankEvent;
 import io.voidpowered.gameranks.config.GRConfiguration;
+import io.voidpowered.gameranks.event.PlayerRankEvent;
 import io.voidpowered.gameranks.util.GameRanksException;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
@@ -249,8 +248,15 @@ public final class RankManager {
 		if(rankName == null || rankName.isEmpty()) {
 			return null;
 		}
+		// case sensitive search
 		for(Rank rank: rankList) {
 			if(rank.getName().equals(rankName)) {
+				return rank;
+			}
+		}
+		// executes non-case sensitive search after so it doesn't order incorrectly
+		for(Rank rank: rankList) {
+			if(rank.getName().equalsIgnoreCase(rankName)) {
 				return rank;
 			}
 		}
@@ -319,6 +325,26 @@ public final class RankManager {
 		}
 	}
 	
+	public void addPermissions(Player player, Rank rank) {
+		if(supportsPerms && player != null && rank != null) {
+			if(rank != null && rank.getPermissions().length > 0) {
+				for(String permission : rank.getPermissions()) {
+					permissions.playerAdd(player, permission);
+				}
+			}
+		}
+	}
+
+	public void removePermissions(Player player, Rank rank) {
+		if(supportsPerms && player != null && rank != null) {
+			if(rank != null && rank.getPermissions().length > 0) {
+				for(String permission : rank.getPermissions()) {
+					permissions.playerRemove(player, permission);
+				}
+			}
+		}
+	}
+	
 	public void addGroup(Player player) {
 		if(supportsGroups && player != null) {
 			addGroup(player, getUserRank(player));
@@ -337,65 +363,37 @@ public final class RankManager {
 		}
 	}
 	
-	public void setSuffix(Player player) {
-		if(supportsChat && player != null) {
-			setSuffix(player, getUserRank(player));
-		}
-	}
-	
 	public void setPrefix(Player player, Rank rank) {
 		if(supportsChat && player != null && rank != null) {
 			if(rank != null && rank.getPrefix() != null && !rank.getPrefix().isEmpty()) {
-				for(World world : Bukkit.getWorlds()) {
-					chat.setPlayerPrefix(world.getName(), player, rank.getSuffix());
-				}
+				chat.setPlayerPrefix(null, player, rank.getPrefix());
 			}
 		}
 	}
 	
 	public void removePrefix(Player player) {
 		if(supportsChat && player != null) {
-			for(World world : Bukkit.getWorlds()) {
-				chat.setPlayerPrefix(world.getName(), player, null);
-			}
+			chat.setPlayerPrefix(null, player, null);
+		}
+	}
+	
+	public void setSuffix(Player player) {
+		if(supportsChat && player != null) {
+			setSuffix(player, getUserRank(player));
 		}
 	}
 	
 	public void setSuffix(Player player, Rank rank) {
 		if(supportsChat && player != null && rank != null) {
 			if(rank != null && rank.getSuffix() != null && !rank.getSuffix().isEmpty()) {
-				for(World world : Bukkit.getWorlds()) {
-					chat.setPlayerSuffix(world.getName(), player, rank.getSuffix());
-				}
+				chat.setPlayerSuffix(null, player, rank.getSuffix());
 			}
 		}
 	}
 	
 	public void removeSuffix(Player player) {
 		if(supportsChat && player != null) {
-			for(World world : Bukkit.getWorlds()) {
-				chat.setPlayerSuffix(world.getName(), player, null);
-			}
-		}
-	}
-	
-	public void addPermissions(Player player, Rank rank) {
-		if(supportsPerms && player != null && rank != null) {
-			if(rank != null && rank.getPermissions().length > 0) {
-				for(String permission : rank.getPermissions()) {
-					permissions.playerAdd(player, permission);
-				}
-			}
-		}
-	}
-
-	public void removePermissions(Player player, Rank rank) {
-		if(supportsPerms && player != null && rank != null) {
-			if(rank != null && rank.getPermissions().length > 0) {
-				for(String permission : rank.getPermissions()) {
-					permissions.playerRemove(player, permission);
-				}
-			}
+			chat.setPlayerSuffix(null, player, null);
 		}
 	}
 	
@@ -424,4 +422,17 @@ public final class RankManager {
 		setSuffix(player, rank);
 	}
 	
+	/**
+	 * Check if a rank is defined in the ranks configuration.
+	 * @param rank to be checked for existence
+	 * @return if rank exists
+	 */
+	public boolean rankExists(String rank){
+		for(Rank rankSearch : getRanks()) {
+			if(rankSearch.getName().equalsIgnoreCase(rank)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

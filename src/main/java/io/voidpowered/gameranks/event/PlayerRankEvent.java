@@ -1,4 +1,4 @@
-package io.voidpowered.gameranks.api.event;
+package io.voidpowered.gameranks.event;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Cancellable;
@@ -15,6 +15,15 @@ public final class PlayerRankEvent extends Event implements Cancellable {
 		handlers = new HandlerList();
 	}
 	
+	/**
+	 Quick hotfix to resolve mysterious error. Checked compatibility. Minor change.
+	 *** Code not yet optimized/checked ***
+	 Added this class per request at "https://www.spigotmc.org/threads/playerrankevent-error.204764/" to resolve error.
+	**/
+	public static HandlerList getHandlerList(){
+		return handlers;
+	}
+	
 	private final OfflinePlayer player;
 	private final Rank previousRank;
 	private Rank rank;
@@ -27,38 +36,58 @@ public final class PlayerRankEvent extends Event implements Cancellable {
 		this.rank = rank;
 	}
 	
-	
+	/**
+	 * Returns handlers
+	 */
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}
 
-
+	/**
+	 * Indicates if the event was cancelled.
+	 */
 	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}
 
+	/**
+	 * Sets if the event has been cancelled.
+	 */
 	@Override
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
 	}
 
-
+	/**
+	 * Get offline player for the event
+	 * @return OfflinePlayer player
+	 */
 	public OfflinePlayer getPlayer() {
 		return player;
 	}
 
+	/**
+	 * Get the previous rank for the player of the event
+	 * @return Previous rank
+	 */
 	public Rank getPreviousRank() {
 		return previousRank;
 	}
 
-
+	/**
+	 * Get the rank for the player of the event
+	 * @return Rank
+	 */
 	public Rank getRank() {
 		return rank;
 	}
 
-
+	/**
+	 * Manually set the rank for the player of the event
+	 * @param newRank New rank to use
+	 */
 	public void setRank(Rank newRank) {
 		this.rank = newRank;
 	}

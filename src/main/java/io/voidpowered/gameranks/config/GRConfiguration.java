@@ -21,16 +21,30 @@ public class GRConfiguration {
 	private String configName;
 	private String defaultConfigName;
 	
+	/**
+	 * Define GRConfiguration
+	 * @param plugin This plugin
+	 * @param configName Name of configuration
+	 */
 	public GRConfiguration(Plugin plugin, String configName) {
 		this(plugin, configName, configName);
 	}
 	
+	/**
+	 * Define GRConfiguration and default configuration
+	 * @param plugin This plugin
+	 * @param configName Name of configuration
+	 * @param defaultConfigName Name of default configuration
+	 */
 	public GRConfiguration(Plugin plugin, String configName, String defaultConfigName) {
 		this.plugin = plugin;
 		this.configName = configName;
 		this.defaultConfigName = defaultConfigName;
 	}
 	
+	/**
+	 * Save the configuration to disk.
+	 */
 	public void saveConfig() {
 		if(config == null || configFile == null) {
 			return;
@@ -42,6 +56,9 @@ public class GRConfiguration {
 		}
 	}
 	
+	/**
+	 * Get changes from disk.
+	 */
 	public void reloadConfig() {
 		if(configFile == null) {
 			configFile = new File(plugin.getDataFolder(), configName);
@@ -65,6 +82,9 @@ public class GRConfiguration {
 		return config;
 	}
 	
+	/**
+	 * Save the default configuration file.
+	 */
 	public void saveDefaultConfig() {
 		if(configFile == null) {
 			configFile = new File(plugin.getDataFolder(), configName);

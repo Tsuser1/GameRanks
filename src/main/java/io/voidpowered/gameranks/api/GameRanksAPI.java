@@ -25,6 +25,14 @@ public final class GameRanksAPI {
 	}
 	
 	/**
+	 * Returns whether the rank specified is real.
+	 * @return boolean of legitimacy
+	 */
+	public boolean rankExists(String rankName) {
+		return rankManager.rankExists(rankName);
+	}
+	
+	/**
 	 * Returns the Rank associated with the id parameter.
 	 * @param id of Rank
 	 * @return Rank associated with id or null

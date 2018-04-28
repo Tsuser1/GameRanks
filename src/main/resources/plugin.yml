@@ -1,20 +1,20 @@
 name: GameRanks
-version: 1.1.0
+version: ${project.version}
 description: Allows uses to rank up and down using currency gaining permissions or other attributes.
 
 author: J4D3N
-authors: []
+authors: [and Tsuser1]
 website: http://www.voidpowered.io/
 
 main: io.voidpowered.gameranks.GameRanks
 database: false
-softdepend: [Vault, Essentials, BOSEconomy, iConomy, MineConomy, MultiCurrency, eWallet, ExonCP, CurrencyCore, CraftConomy, AEco, Gringotts]
+softdepend: [Vault, SaneEconomy, Essentials, BOSEconomy, iConomy, MineConomy, MultiCurrency, eWallet, ExonCP, CurrencyCore, CraftConomy, AEco, Gringotts]
 
 commands:
   ranks:
-    description: Lists all ranks and descriptions.
+    description: Lists all ranks and descriptions in pages and selectively.
     aliases: [grranks]
-    usage: /<command> [rank]
+    usage: /<command> [rank, page number]
     permission: gameranks.commands.ranks
   rank:
     description: Tells you your current rank.
@@ -30,6 +30,11 @@ commands:
     description: Purchases next rank up using your balance.
     aliases: [grrankup]
     usage: /rankup [player]
+  setrank:
+    description: Allows admins to set other players ranks.
+    aliases: [grsetrank]
+    usage: /setrank <rank> [player]
+    permission: gameranks.commands.setrank
   gameranks:
     description: Displays help, version and allows administrators to reload configuration.
     aliases: [gr]
@@ -41,14 +46,20 @@ permissions:
     description: Allows access to all GameRanks features.
     children:
       gameranks.commands.*: true
+      gameranks.rankup.*: true
+      gameranks.rankdown.*: true
   gameranks.commands.*:
     description: Allows access to all GameRanks commands.
     children:
+      gameranks.commands.setrank: true
       gameranks.commands.ranks: true
       gameranks.commands.rank.others: true
       gameranks.commands.rankup.others: true
       gameranks.commands.rankdown.others: true
       gameranks.commands.gameranks.*: true
+  gameranks.commands.setrank:
+    description: Allows you to set player ranks.
+    default: op
   gameranks.commands.ranks:
     description: Allows you to see all available ranks.
     default: true
